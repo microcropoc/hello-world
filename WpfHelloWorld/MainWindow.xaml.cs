@@ -22,6 +22,7 @@ namespace WpfHelloWorld
     {
         public MainWindow()
         {
+            //test
             InitializeComponent();
         }
     }
