@@ -20,10 +20,44 @@ namespace WpfHelloWorld
     /// </summary>
     public partial class MainWindow : Window
     {
+        Point[] pos;
         public MainWindow()
         {
-            //6666
             InitializeComponent();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            pos = new Point[50];
+
+            #region init
+
+            Random rand = new Random();
+            for (int i = 0; i < 50; i++)
+            {
+                pos[i] = new Point(rand.Next(0, (int)myCanvas.RenderSize.Width), rand.Next(0, (int)myCanvas.RenderSize.Height));
+            }
+
+            #endregion
+
+            for (int i = 0; i < 50; i++)
+            {
+                var ell = new Ellipse()
+                {
+                    Fill = Brushes.Indigo,
+                    Height = 20,
+                    Width = 20
+                };
+
+
+                Canvas.SetTop(ell, pos[i].Y);
+                Canvas.SetLeft(ell, pos[i].X);
+
+
+                myCanvas.Children.Add(ell);
+
+            }
+
         }
     }
 }
