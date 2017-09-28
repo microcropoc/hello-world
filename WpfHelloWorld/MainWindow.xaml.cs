@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,7 +21,9 @@ namespace WpfHelloWorld
     /// </summary>
     public partial class MainWindow : Window
     {
-        Point[] pos;
+        const int N = 50;
+        Point[,] masElement= new Point[N,N];
+
         public MainWindow()
         {
             InitializeComponent();
@@ -28,20 +31,23 @@ namespace WpfHelloWorld
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            pos = new Point[50];
-
-            #region init
-
-            Random rand = new Random();
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++)
             {
-                pos[i] = new Point(rand.Next(0, (int)myCanvas.RenderSize.Width), rand.Next(0, (int)myCanvas.RenderSize.Height));
+                masElement[i, j].X = i * 20;
+                masElement[i, j].Y = j * 30;
             }
+            Display();
+        }
 
-            #endregion
+        void Display()
+        {
+            myCanvas.Children.Clear();
 
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++)
             {
+
                 var ell = new Ellipse()
                 {
                     Fill = Brushes.Indigo,
@@ -49,15 +55,12 @@ namespace WpfHelloWorld
                     Width = 20
                 };
 
-
-                Canvas.SetTop(ell, pos[i].Y);
-                Canvas.SetLeft(ell, pos[i].X);
-
+                Canvas.SetTop(ell, masElement[i,j].Y);
+                Canvas.SetLeft(ell, masElement[i,j].X);
 
                 myCanvas.Children.Add(ell);
 
             }
-
         }
     }
 }
