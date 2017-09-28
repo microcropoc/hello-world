@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace WpfHelloWorld
 {
@@ -21,23 +22,13 @@ namespace WpfHelloWorld
     /// </summary>
     public partial class MainWindow : Window
     {
-        const int N = 50;
+        const int N = 20;
         Point[,] masElement= new Point[N,N];
+        long time = 0;
 
         public MainWindow()
         {
             InitializeComponent();
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            for (int i = 0; i < N; i++)
-            for (int j = 0; j < N; j++)
-            {
-                masElement[i, j].X = i * 20;
-                masElement[i, j].Y = j * 30;
-            }
-            Display();
         }
 
         void Display()
@@ -61,6 +52,44 @@ namespace WpfHelloWorld
                 myCanvas.Children.Add(ell);
 
             }
+        }
+
+        private void btnOK_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < N; i++)
+                for (int j = 0; j < N; j++)
+                {
+                    masElement[i, j].X = i * 20;
+                    masElement[i, j].Y = j * 30;
+                }
+            Display();
+            IsStart = true;
+            new Task(incTime).Start();
+        }
+
+        bool IsStart;
+
+        void incTime()
+        {
+            while (IsStart) 
+            {
+                time++;
+
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => txtTime.Text = time.ToString()));
+
+                Thread.Sleep(1000);
+            }
+        }
+
+        private void btnStart_Click(object sender, RoutedEventArgs e)
+        {
+            IsStart = true;
+            new Task(incTime).Start();
+        }
+
+        private void btnStop_Click(object sender, RoutedEventArgs e)
+        {
+            IsStart = false;
         }
     }
 }

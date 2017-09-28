@@ -15,8 +15,17 @@
         <Canvas Name="myCanvas" Grid.Row="0"/>
 
 
-        <StackPanel Grid.Row="1">
-            <Button Click="Button_Click">ОК</Button>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <StackPanel Orientation="Horizontal" Margin="3,0,3,0">
+                <Button Name="btnLast" Click="btnStart_Click">
+                    start
+                </Button>
+                <TextBlock Name="txtTime" HorizontalAlignment="Center" Padding="3" FontSize="30">1</TextBlock>
+                <Button Name="btnStop" Click="btnStop_Click">
+                    stop
+                </Button>
+            </StackPanel>
+            <Button Click="btnOK_Click"  Padding="20,0,20,0" Name="btnOK">ОК</Button>
         </StackPanel>
     </Grid>
 </Window>
