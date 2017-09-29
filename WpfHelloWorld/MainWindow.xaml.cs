@@ -26,9 +26,22 @@ namespace WpfHelloWorld
         Point[,] masElement= new Point[N,N];
         long time = 0;
 
+        DispatcherTimer timer;
+
         public MainWindow()
         {
             InitializeComponent();
+            //init timer
+            timer = new DispatcherTimer();
+            timer.Tick += Timer_Tick ;
+            timer.Interval = new TimeSpan(0, 0, 1);
+        }
+
+        //Вызывается через заданный интервал
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            time = time + 1;
+            txtTime.Text = time.ToString();
         }
 
         void Display()
@@ -63,33 +76,18 @@ namespace WpfHelloWorld
                     masElement[i, j].Y = j * 30;
                 }
             Display();
-            IsStart = true;
-            new Task(incTime).Start();
+            timer.Start();
         }
 
-        bool IsStart;
-
-        void incTime()
-        {
-            while (IsStart) 
-            {
-                time++;
-
-                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => txtTime.Text = time.ToString()));
-
-                Thread.Sleep(1000);
-            }
-        }
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
-            IsStart = true;
-            new Task(incTime).Start();
+            timer.Start();
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
-            IsStart = false;
+            timer.Stop();
         }
     }
 }

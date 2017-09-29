@@ -20,7 +20,7 @@
                 <Button Name="btnLast" Click="btnStart_Click">
                     start
                 </Button>
-                <TextBlock Name="txtTime" HorizontalAlignment="Center" Padding="3" FontSize="30">1</TextBlock>
+                <TextBlock Name="txtTime" HorizontalAlignment="Center" Padding="3" FontSize="30">0</TextBlock>
                 <Button Name="btnStop" Click="btnStop_Click">
                     stop
                 </Button>
