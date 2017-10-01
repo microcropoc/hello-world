@@ -7,18 +7,7 @@ using System.Threading.Tasks;
 namespace ConsoleApp13
 {
 #region struct
-    public struct Energy //структура
-    {
-        public double E { get; set; }
 
-
-        public Energy(double e) // конструктор
-        {
-            E = e;
-
-        }
-
-    }
     public struct Position //структура
     {
         public double X { get; set; }
@@ -30,47 +19,63 @@ namespace ConsoleApp13
             Y = y;
         }
 
-
-    }
-    public struct Velocity //структура
-    {
-        public double VX { get; set; }
-        public double VY { get; set; }
-
-        public Velocity(double vx, double vy) // конструктор
+        public static Position operator +(Position p1, Position p2)
         {
-            VX = vx;
-            VY = vy;
+            return new Position(p1.X + p2.X, p1.Y + p2.Y);
+        }
+
+        public static Position operator *(Position p,double d)
+        {
+            return new Position(p.X * d, p.Y * d);
+        }
+
+        public static Position operator *(double d, Position p)
+        {
+            return new Position(p.X * d, p.Y * d);
         }
 
     }
-    public struct Acceleratio //структура
-    {
-        public double AX { get; set; }
-        public double AY { get; set; }
+    //public struct Velocity //структура
+    //{
+    //    public double VX { get; set; }
+    //    public double VY { get; set; }
 
-        public Acceleratio(double ax, double ay) // конструктор
-        {
-            AX = ax;
-            AY = ay;
-        }
+    //    public Velocity(double vx, double vy) // конструктор
+    //    {
+    //        VX = vx;
+    //        VY = vy;
+    //    }
 
-    }
+    //}
+    //public struct Acceleratio //структура
+    //{
+    //    public double AX { get; set; }
+    //    public double AY { get; set; }
+
+    //    public Acceleratio(double ax, double ay) // конструктор
+    //    {
+    //        AX = ax;
+    //        AY = ay;
+    //    }
+
+    //}
     #endregion
 
     class Program
     {
         const int N = 15;
+        const int Lx= 640;
+        const int Ly= 480;
         static Position[,] massPosition;
         static double x = 20;
         static double y = 20;
-        static Velocity[,] massVelocity;
+        static Position[,] massVelocity;
         static double vx;
         static double vy;
-        static Acceleratio[,] massacceleratio;
+        static Position[,] massacceleratio;
         static double ax;
         static double ay;
-        static Energy[] massEnergy;
+        static double[] massEnergy;
         static double e;
 
         static void Main(string[] args)
@@ -98,9 +103,9 @@ namespace ConsoleApp13
                 }
         }
 
-        public static void InitmasVelocity(out Velocity[,] m)
+        public static void InitmasVelocity(out Position[,] m)
         {
-            m = new Velocity[N, N];
+            m = new Position[N, N];
             int v0 = 160;
             Random rand = new Random();
 
@@ -108,13 +113,13 @@ namespace ConsoleApp13
 
                 for (int j = 0; j < N; j++)
                 {
-                    m[i, j].VX = v0 * rand.NextDouble();        
-                    m[i, j].VY = v0 * rand.NextDouble();       
+                    m[i, j].X = v0 * rand.NextDouble();        
+                    m[i, j].Y = v0 * rand.NextDouble();       
                 }
         }
-        public static void InitmasAcceleratio(out Acceleratio[,] m)
+        public static void InitmasAcceleratio(out Position[,] m)
         {
-            m = new Acceleratio[N, N];
+            m = new Position[N, N];
             int a0 = 160;
             Random rand = new Random();
 
@@ -122,21 +127,40 @@ namespace ConsoleApp13
 
                 for (int j = 0; j < N; j++)
                 {
-                    m[i, j].AX = a0 * rand.NextDouble();        
-                    m[i, j].AY = a0 * rand.NextDouble();       
+                    m[i, j].X = a0 * rand.NextDouble();        
+                    m[i, j].Y = a0 * rand.NextDouble();       
                 }
         }
-        public static void Verlet(Position[,] signaturaP , Velocity[,] signaturaV, Acceleratio[,] sugnaturaA )
+
+        public static void Accel()
+        {
+
+        }
+
+        public static void Verlet(Position[,] poss , Position[,] vels, Position[,] accels)
         {
             var deltaT = 20;
             for (int i = 0; i < N; i++)
-                for (int j = 0; i <N; j++)
-                {
+            for (int j = 0; i <N; j++)
+            {
+                poss[i, j] = poss[i, j] + vels[i, j] * deltaT+(0.5*accels[i, j]*(deltaT * deltaT));
+            }
+            for (int i = 0; i < N; i++)
+            for (int j = 0; i < N; j++)
+            {
+                vels[i, j] = vels[i, j] + (0.5 * accels[i, j] * deltaT);
+            }
+            InitmasAcceleratio(out massacceleratio);
+            for (int i = 0; i < N; i++)
+            for (int j = 0; i < N; j++)
+            {
+                poss[i, j] = poss[i, j] + vels[i, j] * deltaT + (0.5 * accels[i, j] * (deltaT * deltaT));
+            }
+        }
 
-                 Position newPos = signaturaP[i,j] + signaturaV[i,j]
-                }
-                
-            
+        public static void Periodic(Position pos,int Lx,int Ly)
+        {
+
         }
 
 
