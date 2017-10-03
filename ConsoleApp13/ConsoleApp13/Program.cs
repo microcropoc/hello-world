@@ -33,6 +33,10 @@ namespace ConsoleApp13
         {
             return new Position(p.X * d, p.Y * d);
         }
+        public static Position operator -(Position p1, Position p2)
+        {
+            return new Position(p1.X - p2.X, p1.Y - p2.Y);
+        }
 
     }
     //public struct Velocity //структура
@@ -132,9 +136,41 @@ namespace ConsoleApp13
                 }
         }
 
-        public static void Accel()
+        public static void Accel(Position[,] maspos, Position[,] masaccel)
         {
 
+         for(i=0, i<N-1,i++)
+         for(j=(i+1), i<N,j++)
+         {
+            Position d = maspos[i,j]- maspos[j,i];
+            Separation(ref d);
+            var r= Math.Sqrt(Math.Pow(d.X,2)+Math.Pow(d.Y,2));
+            double f;
+            double pot;
+            Force(r,out f,out pot)
+            masaccel[i,j]=
+
+         }
+          
+        
+        }
+        public static void Force(double r,out double f, out double pot)
+        {
+            double g= 24*(1/r)*(Math.Pow(r,6)*(2*(Pow(r,6)-1)));
+            f=g/r;
+            pot=4*(Math.Pow(r,6)*(Math.Pow(r,6)-1));
+
+        }
+        public static void Separation(ref Position d)
+        {
+            if (Math.Abs(d) > 0.5*Lx)
+            {
+                d.X = d.X - Math.Sign(d.X)*Lx:
+            }
+            if (Math.Abs(d) > 0.5*Ly)
+            {
+                d.Y = d.Y - Math.Sign(d.Y)*Ly:
+            }
         }
 
         public static void Verlet(Position[,] poss , Position[,] vels, Position[,] accels)
