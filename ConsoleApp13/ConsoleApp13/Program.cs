@@ -70,17 +70,17 @@ namespace ConsoleApp13
         const int N = 15;
         const int Lx= 640;
         const int Ly= 480;
-        static Position[,] massPosition;
+        static Position[] massPosition;
         static double x = 20;
         static double y = 20;
-        static Position[,] massVelocity;
+        static Position[] massVelocity;
         static double vx;
         static double vy;
-        static Position[,] massacceleratio;
+        static Position[] massacceleratio;
         static double ax;
         static double ay;
         static double[] massEnergy;
-        static double e;
+        static double pe;
 
         static void Main(string[] args)
         {
@@ -90,108 +90,101 @@ namespace ConsoleApp13
             Console.ReadKey();
         }
 
-        public static void InitmasPosition(out Position[,] m)
+        public static void InitmasPosition(out Position[] m)
         {
-            m = new Position[N,N];
+            m = new Position[N];
             int x0 = 20;
             int y0 = 20;
             double b = 24;
-            m[0, 0] = new Position(20, 20);
-
+            m[0] = new Position(20, 20);
+            
             for (int i = 0; i < N; i++)
-
-                for (int j = 0; j < N; j++)
-                {
-                    m[i, j].X = x0 + i * b;        //иксы
-                    m[i, j].Y = y0 + j * b;       // игреки
-                }
+            {
+                m[i].X = x0 + i * b;        //иксы
+                m[i].Y = y0 + i * b;       // игреки
+            }
         }
 
-        public static void InitmasVelocity(out Position[,] m)
+        public static void InitmasVelocity(out Position[] m)
         {
-            m = new Position[N, N];
+            m = new Position[N];
             int v0 = 160;
             Random rand = new Random();
 
             for (int i = 0; i < N; i++)
-
-                for (int j = 0; j < N; j++)
-                {
-                    m[i, j].X = v0 * rand.NextDouble();        
-                    m[i, j].Y = v0 * rand.NextDouble();       
-                }
+            {
+                m[i].X = v0 * rand.NextDouble();
+                m[i].Y = v0 * rand.NextDouble();
+            }   
         }
-        public static void InitmasAcceleratio(out Position[,] m)
+        public static void InitmasAcceleratio(out Position[] m)
         {
-            m = new Position[N, N];
+            m = new Position[N];
             int a0 = 160;
             Random rand = new Random();
-
             for (int i = 0; i < N; i++)
-
-                for (int j = 0; j < N; j++)
-                {
-                    m[i, j].X = a0 * rand.NextDouble();        
-                    m[i, j].Y = a0 * rand.NextDouble();       
-                }
+            {
+                m[i].X = a0 * rand.NextDouble();        
+                m[i].Y = a0 * rand.NextDouble();       
+            }
         }
 
-        public static void Accel(Position[,] maspos, Position[,] masaccel)
+        public static void Accel(Position[] maspos, Position[] masaccel,ref double pe)
         {
-
-         for(i=0, i<N-1,i++)
-         for(j=(i+1), i<N,j++)
-         {
-            Position d = maspos[i,j]- maspos[j,i];
-            Separation(ref d);
-            var r= Math.Sqrt(Math.Pow(d.X,2)+Math.Pow(d.Y,2));
-            double f;
-            double pot;
-            Force(r,out f,out pot)
-            masaccel[i,j]=
-
-         }
-          
-        
+            for(int i=0; i<N-1; i++)
+            for(int j=(i+1); i<N; j++)
+            {
+                Position d = maspos[i]- maspos[j];
+                Separation(ref d);
+                var r= Math.Sqrt(Math.Pow(d.X,2)+Math.Pow(d.Y,2));
+                double f;
+                double pot;
+                Force(r, out f, out pot);
+                masaccel[i] = masaccel[i] + f * d;
+                masaccel[i] = masaccel[i] + f * d;
+                pe += pot;
+            }
         }
         public static void Force(double r,out double f, out double pot)
         {
-            double g= 24*(1/r)*(Math.Pow(r,6)*(2*(Pow(r,6)-1)));
+            double g= 24*(1/r)*(Math.Pow(r,6)*(2*(Math.Pow(r,6)-1)));
             f=g/r;
             pot=4*(Math.Pow(r,6)*(Math.Pow(r,6)-1));
 
         }
         public static void Separation(ref Position d)
         {
-            if (Math.Abs(d) > 0.5*Lx)
+            if (Math.Abs(d.X) > 0.5*Lx)
             {
-                d.X = d.X - Math.Sign(d.X)*Lx:
+                d.X = d.X - Math.Sign(d.X) * Lx;
             }
-            if (Math.Abs(d) > 0.5*Ly)
+            if (Math.Abs(d.Y) > 0.5*Ly)
             {
-                d.Y = d.Y - Math.Sign(d.Y)*Ly:
+                d.Y = d.Y - Math.Sign(d.Y) * Ly;
             }
         }
 
-        public static void Verlet(Position[,] poss , Position[,] vels, Position[,] accels)
+        public static void Verlet(Position[] poss , Position[] vels, Position[] accels)
         {
             var deltaT = 20;
             for (int i = 0; i < N; i++)
-            for (int j = 0; i <N; j++)
             {
-                poss[i, j] = poss[i, j] + vels[i, j] * deltaT+(0.5*accels[i, j]*(deltaT * deltaT));
+                poss[i] = poss[i] + vels[i] * deltaT+(0.5*accels[i]*(deltaT * deltaT));
             }
             for (int i = 0; i < N; i++)
-            for (int j = 0; i < N; j++)
             {
-                vels[i, j] = vels[i, j] + (0.5 * accels[i, j] * deltaT);
+                vels[i] = vels[i] + (0.5 * accels[i] * deltaT);
             }
-            InitmasAcceleratio(out massacceleratio);
+            double pe=0;
+            Accel(poss, accels,ref pe);
             for (int i = 0; i < N; i++)
-            for (int j = 0; i < N; j++)
             {
-                poss[i, j] = poss[i, j] + vels[i, j] * deltaT + (0.5 * accels[i, j] * (deltaT * deltaT));
+                vels[i] = vels[i] + (0.5 * accels[i] * deltaT);
+
+                double ke = 0;
+                ke = ke + 0.5 * (Math.Pow(vels[i].X, 2) + Math.Pow(vels[i].Y, 2));
             }
+
         }
 
         public static void Periodic(Position pos,int Lx,int Ly)
