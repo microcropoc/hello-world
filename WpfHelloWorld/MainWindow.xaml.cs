@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -51,68 +52,7 @@ namespace WpfHelloWorld
     {
         long time = 0;
         DispatcherTimer timer;
-        public MainWindow()
-        {
-            InitializeComponent();
-            InitmasPosition(out massPosition);
-            InitmasVelocity(out massVelocity);
-            InitmasAcceleratio(out massacceleratio);
-            //init timer
-            timer = new DispatcherTimer();
-            timer.Tick += Timer_Tick;
-            timer.Interval = new TimeSpan(0, 0, 5);
-        }
-
-        //Вызывается через заданный интервал
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            Verlet(massPosition, massVelocity, massacceleratio);
-            Display();
-            time = time + 5;
-            txtTime.Text = time.ToString();
-        }
-
-        void Display()
-        {
-            myCanvas.Children.Clear();
-
-            for (int i = 0; i < N; i++)
-            {
-
-                var ell = new Ellipse()
-                {
-                    Fill = Brushes.Indigo,
-                    Height = 20,
-                    Width = 20
-                };
-
-                Canvas.SetTop(ell, massPosition[i].Y);
-                Canvas.SetLeft(ell, massPosition[i].X);
-
-                myCanvas.Children.Add(ell);
-
-            }
-
-
-        }
-
-        private void btnOK_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
-
-        private void btnStart_Click(object sender, RoutedEventArgs e)
-        {
-            timer.Start();
-        }
-
-        private void btnStop_Click(object sender, RoutedEventArgs e)
-        {
-            timer.Stop();
-        }
-
-        const int N = 15;
+        const int N = 225;
         const int Lx = 640;
         const int Ly = 480;
         static Position[] massPosition;
@@ -126,23 +66,92 @@ namespace WpfHelloWorld
         static double ay;
         static double[] massEnergy;
         static double pe;
+        public MainWindow()
+        {
+            InitializeComponent();
+            InitmasPosition(out massPosition);
+            InitmasVelocity(out massVelocity);
+            InitmasAcceleratio(out massacceleratio);
+            //init timer
+            timer = new DispatcherTimer();
+            timer.Tick += Timer_Tick;
+            timer.Interval = new TimeSpan(0, 0, 1);
+            Display();
+        }
+        
+
+        //Вызывается через заданный интервал
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+           // Stopwatch stopWatch = new Stopwatch();
+           // stopWatch.Start();
+            Verlet(massPosition, massVelocity, massacceleratio);
+            Display();
+            time = time + 1;
+            txtTime.Text = time.ToString();
+           // stopWatch.Stop();
+           // var diagTime = stopWatch.ElapsedMilliseconds;
+        }
+
+        private void btnOK_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+
+        private void btnStart_Click(object sender, RoutedEventArgs e)
+        {
+            timer.Start();
+        }
+
+        private void btnStop_Click(object sender, RoutedEventArgs e)
+        {
+            timer.Stop();
+        }
+
+        void Display()
+        {
+            myCanvas.Children.Clear();
+            for (int i = 0; i < N; i++)
+            {
+                var ell = new Ellipse()
+                {
+                    Fill = Brushes.Indigo,
+                    Height = 20,
+                    Width = 20
+                };
+                Canvas.SetTop(ell, massPosition[i].Y);
+                Canvas.SetLeft(ell, massPosition[i].X);
+                myCanvas.Children.Add(ell);
+            }
+        }
+        
 
         public static void InitmasPosition(out Position[] m)
         {
             m = new Position[N];
             int x0 = 20;
             int y0 = 20;
-            double b = 24;
+            double b = 20;
             m[0] = new Position(20, 20);
 
+            int dem =(int) Math.Sqrt(N);
+            int j = 0;
+            int k = 0;
             for (int i = 0; i < N; i++)
             {
-                m[i].X = x0 + i * b;        //иксы
-                m[i].Y = y0 + i * b;       // игреки
-            }
+                if(i%dem==0)
+                {
+                    j++;
+                    k = 0;
+                }
+                m[i].X = x0 + k * b;        //иксы
+                m[i].Y = y0 + j * b;       // игреки
+                k++;
+            }            
         }
 
-        public static void InitmasVelocity(out Position[] m)
+        public void InitmasVelocity(out Position[] m)
         {
             m = new Position[N];
             int v0 = 1;
@@ -154,7 +163,7 @@ namespace WpfHelloWorld
                 m[i].Y = v0 * rand.NextDouble();
             }
         }
-        public static void InitmasAcceleratio(out Position[] m)
+        public void InitmasAcceleratio(out Position[] m)
         {
             m = new Position[N];
             int a0 = 2;
@@ -166,7 +175,7 @@ namespace WpfHelloWorld
             }
         }
 
-        public static void Accel(Position[] maspos, Position[] masaccel, ref double pe)
+        public void Accel(Position[] maspos, Position[] masaccel, ref double pe)
         {
             for (int i = 0; i < N - 1; i++)
                 for (int j = (i + 1); j < N; j++)
@@ -182,14 +191,14 @@ namespace WpfHelloWorld
                     pe += pot;
                 }
         }
-        public static void Force(double r, out double f, out double pot)
+        public  void Force(double r, out double f, out double pot)
         {
             double g = 24 * (1 / r) * (Math.Pow(r, 6) * (2 * (Math.Pow(r, 6) - 1)));
             f = g / r;
             pot = 4 * (Math.Pow(r, 6) * (Math.Pow(r, 6) - 1));
 
         }
-        public static void Separation(ref Position d)
+        public  void Separation(ref Position d)
         {
             if (Math.Abs(d.X) > 0.5 * Lx)
             {
@@ -201,12 +210,13 @@ namespace WpfHelloWorld
             }
         }
 
-        public static void Verlet(Position[] poss, Position[] vels, Position[] accels)
+        public  void Verlet(Position[] poss, Position[] vels, Position[] accels)
         {
-            var deltaT = 20;
+            var deltaT = 0.001;
             for (int i = 0; i < N; i++)
             {
                 poss[i] = poss[i] + vels[i] * deltaT + (0.5 * accels[i] * (deltaT * deltaT));
+                Periodic(ref poss[i],(int)myCanvas.ActualWidth, (int)myCanvas.ActualHeight);
             }
             for (int i = 0; i < N; i++)
             {
@@ -224,9 +234,10 @@ namespace WpfHelloWorld
 
         }
 
-        public static void Periodic(Position pos, int Lx, int Ly)
+        public void Periodic(ref Position pos, int Lx, int Ly)
         {
-
+            pos.X = pos.X % 600;
+            pos.Y = pos.Y % 600;
         }
 
 
