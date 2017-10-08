@@ -52,9 +52,8 @@ namespace WpfHelloWorld
     {
         long time = 0;
         DispatcherTimer timer;
-        const int N = 225;
-        const int Lx = 640;
-        const int Ly = 480;
+        const int N = 9;
+        //const int Lx = 640;
         static Position[] massPosition;
         static double x = 20;
         static double y = 20;
@@ -109,6 +108,19 @@ namespace WpfHelloWorld
             timer.Stop();
         }
 
+        Brush[] masBrsh = new[] 
+        {
+            Brushes.Black,
+            Brushes.Indigo,
+            Brushes.Red,
+            Brushes.Green,
+            Brushes.HotPink,
+            Brushes.Khaki,
+            Brushes.Blue,
+            Brushes.Orange,
+            Brushes.Violet
+        };
+
         void Display()
         {
             myCanvas.Children.Clear();
@@ -116,9 +128,9 @@ namespace WpfHelloWorld
             {
                 var ell = new Ellipse()
                 {
-                    Fill = Brushes.Indigo,
-                    Height = 20,
-                    Width = 20
+                    Fill = masBrsh[i],
+                    Height = 3*(i+1),
+                    Width = 3*(i+1)
                 };
                 Canvas.SetTop(ell, massPosition[i].Y);
                 Canvas.SetLeft(ell, massPosition[i].X);
@@ -200,13 +212,13 @@ namespace WpfHelloWorld
         }
         public  void Separation(ref Position d)
         {
-            if (Math.Abs(d.X) > 0.5 * Lx)
+            if (Math.Abs(d.X) > 0.5 * (int)myCanvas.ActualWidth)
             {
-                d.X = d.X - Math.Sign(d.X) * Lx;
+                d.X = d.X - Math.Sign(d.X) * (int)myCanvas.ActualWidth;
             }
-            if (Math.Abs(d.Y) > 0.5 * Ly)
+            if (Math.Abs(d.Y) > 0.5 * (int)myCanvas.ActualHeight)
             {
-                d.Y = d.Y - Math.Sign(d.Y) * Ly;
+                d.Y = d.Y - Math.Sign(d.Y) * (int)myCanvas.ActualHeight;
             }
         }
 
@@ -236,8 +248,37 @@ namespace WpfHelloWorld
 
         public void Periodic(ref Position pos, int Lx, int Ly)
         {
-            pos.X = pos.X % 600;
-            pos.Y = pos.Y % 600;
+            //bool flag = false;
+            //do
+            //{
+            //    flag = false;
+            //    if (pos.X >= 640)
+            //    {
+            //        pos.X = pos.X - 640;
+            //        flag = true;
+            //    }
+            //    if (pos.Y >= 480)
+            //    {
+            //        pos.Y = pos.Y - 480;
+            //        flag = true;
+            //    }
+            //    if (pos.X < 0)
+            //    {
+            //        pos.X = pos.X + 640;
+            //        flag = true;
+            //    }
+            //    if (pos.Y < 0)
+            //    {
+            //        pos.Y = pos.Y + 480;
+            //        flag = true;
+            //    }
+            //} while (flag);
+
+            pos.X = Math.Abs(((pos.X * 100) % (Lx * 100)) / 100);
+            pos.Y = Math.Abs(((pos.Y * 100) % (Ly * 100)) / 100);
+
+            //pos.X = pos.X % 600;
+            //pos.Y = pos.Y % 600;
         }
 
 
