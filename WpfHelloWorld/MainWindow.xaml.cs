@@ -54,6 +54,7 @@ namespace WpfHelloWorld
         DispatcherTimer timer;
         const int N = 9;
         //const int Lx = 640;
+       // const int Ly = 480;
         static Position[] massPosition;
         static double x = 20;
         static double y = 20;
