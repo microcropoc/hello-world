@@ -52,7 +52,7 @@ namespace WpfHelloWorld
     {
         long time = 0;
         DispatcherTimer timer;
-        const int N = 9;
+        const int N = 225;
         //const int Lx = 640;
        // const int Ly = 480;
         static Position[] massPosition;
@@ -109,18 +109,7 @@ namespace WpfHelloWorld
             timer.Stop();
         }
 
-        Brush[] masBrsh = new[] 
-        {
-            Brushes.Black,
-            Brushes.Indigo,
-            Brushes.Red,
-            Brushes.Green,
-            Brushes.HotPink,
-            Brushes.Khaki,
-            Brushes.Blue,
-            Brushes.Orange,
-            Brushes.Violet
-        };
+       
 
         void Display()
         {
@@ -129,16 +118,16 @@ namespace WpfHelloWorld
             {
                 var ell = new Ellipse()
                 {
-                    Fill = masBrsh[i],
-                    Height = 3*(i+1),
-                    Width = 3*(i+1)
+                    Fill = Brushes.Indigo,
+                    Height = 20,
+                    Width = 20
                 };
                 Canvas.SetTop(ell, massPosition[i].Y);
                 Canvas.SetLeft(ell, massPosition[i].X);
                 myCanvas.Children.Add(ell);
             }
         }
-        
+
 
         public static void InitmasPosition(out Position[] m)
         {
@@ -167,7 +156,7 @@ namespace WpfHelloWorld
         public void InitmasVelocity(out Position[] m)
         {
             m = new Position[N];
-            int v0 = 1;
+            int v0 = 10;
             Random rand = new Random();
 
             for (int i = 0; i < N; i++)
@@ -225,23 +214,28 @@ namespace WpfHelloWorld
 
         public  void Verlet(Position[] poss, Position[] vels, Position[] accels)
         {
-            var deltaT = 0.001;
+            var deltaT = 0.1;
             for (int i = 0; i < N; i++)
             {
                 poss[i] = poss[i] + vels[i] * deltaT + (0.5 * accels[i] * (deltaT * deltaT));
-                Periodic(ref poss[i],(int)myCanvas.ActualWidth, (int)myCanvas.ActualHeight);
+                Periodic(ref poss[i],340,340);
+               //if (!ProverkaPos())
+               //{
+                 //   poss[i].X = poss[i].X + deltax;
+                   // poss[i].Y = poss[i].Y + deltay;
+               //}
             }
             for (int i = 0; i < N; i++)
             {
                 vels[i] = vels[i] + (0.5 * accels[i] * deltaT);
             }
-            double pe = 0;
+            double pe = 1;
             Accel(poss, accels, ref pe);
             for (int i = 0; i < N; i++)
             {
                 vels[i] = vels[i] + (0.5 * accels[i] * deltaT);
 
-                double ke = 0;
+                double ke = 1;
                 ke = ke + 0.5 * (Math.Pow(vels[i].X, 2) + Math.Pow(vels[i].Y, 2));
             }
 
@@ -249,39 +243,34 @@ namespace WpfHelloWorld
 
         public void Periodic(ref Position pos, int Lx, int Ly)
         {
-            //bool flag = false;
-            //do
-            //{
-            //    flag = false;
-            //    if (pos.X >= 640)
-            //    {
-            //        pos.X = pos.X - 640;
-            //        flag = true;
-            //    }
-            //    if (pos.Y >= 480)
-            //    {
-            //        pos.Y = pos.Y - 480;
-            //        flag = true;
-            //    }
-            //    if (pos.X < 0)
-            //    {
-            //        pos.X = pos.X + 640;
-            //        flag = true;
-            //    }
-            //    if (pos.Y < 0)
-            //    {
-            //        pos.Y = pos.Y + 480;
-            //        flag = true;
-            //    }
-            //} while (flag);
+            
 
             pos.X = Math.Abs(((pos.X * 100) % (Lx * 100)) / 100);
             pos.Y = Math.Abs(((pos.Y * 100) % (Ly * 100)) / 100);
-
-            //pos.X = pos.X % 600;
-            //pos.Y = pos.Y % 600;
         }
+        public bool ProverkaPos(out double deltax,out double deltay)
+        {
+            deltax = 0;
+            deltay = 0;
+            double dx=0;
+            double dy=0;
+            for (int i = 0; i < N; i++)
+            {
+                dx = dx - massPosition[i].X;
+                dy = dy - massPosition[i].Y;
+            
+            }
+            if (Math.Abs(dx) < 20)
+            {
+                return false;
+            }
+            if (Math.Abs(dy) < 20)
+            {
+                return false;
+            }
 
+            return true;
+        }
 
         #region oldmainwindow
         //public partial class MainWindow : Window
