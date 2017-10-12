@@ -52,7 +52,7 @@ namespace WpfHelloWorld
     {
         long time = 0;
         DispatcherTimer timer;
-        const int N = 16;
+        const int N = 225;
         const int Lx = 640;
         const int Ly = 480;
         static Position[] massPosition;
@@ -218,7 +218,7 @@ namespace WpfHelloWorld
 
         public  void Verlet(Position[] poss, Position[] vels, Position[] accels)
         {
-            var deltaT = 0.1;
+            var deltaT = 0.0000000000000005;
             for (int i = 0; i < N; i++)
             {
                 poss[i] = poss[i] + vels[i] * deltaT + (0.5 * accels[i] * (deltaT * deltaT));
