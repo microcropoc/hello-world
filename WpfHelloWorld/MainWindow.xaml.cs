@@ -52,9 +52,9 @@ namespace WpfHelloWorld
     {
         long time = 0;
         DispatcherTimer timer;
-        const int N = 225;
-        //const int Lx = 640;
-       // const int Ly = 480;
+        const int N = 16;
+        const int Lx = 640;
+        const int Ly = 480;
         static Position[] massPosition;
         static double x = 20;
         static double y = 20;
@@ -66,6 +66,7 @@ namespace WpfHelloWorld
         static double ay;
         static double[] massEnergy;
         static double pe;
+        int D = 20;
         public MainWindow()
         {
             InitializeComponent();
@@ -214,16 +215,13 @@ namespace WpfHelloWorld
 
         public  void Verlet(Position[] poss, Position[] vels, Position[] accels)
         {
-            var deltaT = 0.1;
+            var deltaT = 0.01;
             for (int i = 0; i < N; i++)
             {
                 poss[i] = poss[i] + vels[i] * deltaT + (0.5 * accels[i] * (deltaT * deltaT));
-                Periodic(ref poss[i],340,340);
-               //if (!ProverkaPos())
-               //{
-                 //   poss[i].X = poss[i].X + deltax;
-                   // poss[i].Y = poss[i].Y + deltay;
-               //}
+                Periodic(ref poss[i],Lx,Ly);
+                ProverkaPos();
+               
             }
             for (int i = 0; i < N; i++)
             {
@@ -247,14 +245,19 @@ namespace WpfHelloWorld
             pos.Y = Math.Abs(pos.Y % Ly);
         }
 
-        public bool ProverkaPos(out double deltax,out double deltay)
+        public void ProverkaPos()
         {
-            for (int i = 0; i < N; i++)
-            for (int j = i+1; j < N; j++)
+           bool rescol = false;
+            do
             {
-                    Collision();
-            }
-            
+                rescol = false;
+                for (int i = 0; i < N; i++)
+                    for (int j = i + 1; j < N; j++)
+                    {
+                        if (Collision(ref massPosition[i], ref massPosition[j]))
+                            rescol = true;
+                    }
+            } while (rescol);
 
             #region old
 
@@ -283,9 +286,25 @@ namespace WpfHelloWorld
             #endregion
         }
 
-        void Collision(ref Position p1,ref Position p2)
+        bool Collision(ref Position p1,ref Position p2)
         {
-
+            bool result=false;
+            int r = D / 2;
+            double dx, dy;
+            dx = (p1.X - p2.X);
+            dy = (p1.Y - p2.Y);
+            if (dx < r)
+            {
+                p1.X = (p1.X + dx)%Lx;
+                result = true;
+            }
+            if (dy<r)
+                
+            {
+                p1.X = (p1.Y + dy)%Ly;
+                result = true;
+            }
+            return false;
         }
 
         #region oldmainwindow
