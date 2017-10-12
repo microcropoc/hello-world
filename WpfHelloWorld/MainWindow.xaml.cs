@@ -243,49 +243,33 @@ namespace WpfHelloWorld
 
         public void Periodic(ref Position pos, int Lx, int Ly)
         {
-            pos.X = Math.Abs(pos.X % Lx);
-            pos.Y = Math.Abs(pos.Y % Ly);
-        }
+            
 
+            pos.X = Math.Abs(((pos.X * 100) % (Lx * 100)) / 100);
+            pos.Y = Math.Abs(((pos.Y * 100) % (Ly * 100)) / 100);
+        }
         public bool ProverkaPos(out double deltax,out double deltay)
         {
+            deltax = 0;
+            deltay = 0;
+            double dx=0;
+            double dy=0;
             for (int i = 0; i < N; i++)
-            for (int j = i+1; j < N; j++)
             {
-                    Collision();
+                dx = dx - massPosition[i].X;
+                dy = dy - massPosition[i].Y;
+            
             }
-            
+            if (Math.Abs(dx) < 20)
+            {
+                return false;
+            }
+            if (Math.Abs(dy) < 20)
+            {
+                return false;
+            }
 
-            #region old
-
-            //deltax = 0;
-            //deltay = 0;
-            //double dx=0;
-            //double dy=0;
-            //for (int i = 0; i < N; i++)
-            //{
-            //    dx = dx - massPosition[i].X;
-            //    dy = dy - massPosition[i].Y;
-            
-            //}
-            //if (Math.Abs(dx) < 20)
-            //{
-            //    return false;
-            //}
-            //if (Math.Abs(dy) < 20)
-            //{
-            //    return false;
-            //}
-
-            //return true;
-
-
-            #endregion
-        }
-
-        void Collision(ref Position p1,ref Position p2)
-        {
-
+            return true;
         }
 
         #region oldmainwindow
