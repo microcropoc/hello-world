@@ -115,6 +115,7 @@ namespace WpfHelloWorld
         void Display()
         {
             myCanvas.Children.Clear();
+            txtInput.Text = "";
             for (int i = 0; i < N; i++)
             {
                 var ell = new Ellipse()
@@ -126,6 +127,8 @@ namespace WpfHelloWorld
                 Canvas.SetTop(ell, massPosition[i].Y);
                 Canvas.SetLeft(ell, massPosition[i].X);
                 myCanvas.Children.Add(ell);
+                //txtInput.Text = txtInput.Text + "X: " + massPosition[i].X + " Y: " + massPosition[i].Y + '\n';
+                txtInput.Text += "X: " + massPosition[i].X + " Y: " + massPosition[i].Y + '\n';
             }
         }
 
@@ -215,12 +218,12 @@ namespace WpfHelloWorld
 
         public  void Verlet(Position[] poss, Position[] vels, Position[] accels)
         {
-            var deltaT = 0.01;
+            var deltaT = 0.1;
             for (int i = 0; i < N; i++)
             {
                 poss[i] = poss[i] + vels[i] * deltaT + (0.5 * accels[i] * (deltaT * deltaT));
                 Periodic(ref poss[i],Lx,Ly);
-                ProverkaPos();
+                //ProverkaPos();
                
             }
             for (int i = 0; i < N; i++)
@@ -241,8 +244,16 @@ namespace WpfHelloWorld
 
         public void Periodic(ref Position pos, int Lx, int Ly)
         {
+            if (double.IsNaN(pos.X) || double.IsNaN(pos.Y))
+            {
+
+            }
             pos.X = Math.Abs(pos.X % Lx);
             pos.Y = Math.Abs(pos.Y % Ly);
+            if(double.IsNaN(pos.X) || double.IsNaN(pos.Y))
+            {
+
+            }
         }
 
         public void ProverkaPos()

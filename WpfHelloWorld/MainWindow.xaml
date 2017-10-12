@@ -6,14 +6,24 @@
         xmlns:local="clr-namespace:WpfHelloWorld"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <Grid>
+    <Grid Background="Azure">
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
         </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition ></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Border BorderBrush="Black" BorderThickness="1">
+                <Canvas Margin="2" Name="myCanvas" Background="White" Grid.Row="0"/>
+            </Border>
+            <GridSplitter Grid.Column="1"/>
 
-        <Canvas Name="myCanvas" Grid.Row="0"/>
-
+            <TextBlock Background="WhiteSmoke" Grid.Column="2" FontSize="20" TextWrapping="Wrap" Name="txtInput"></TextBlock>
+        </Grid>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
             <StackPanel Orientation="Horizontal" Margin="3,0,3,0">
