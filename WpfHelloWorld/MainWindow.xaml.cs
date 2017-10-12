@@ -156,19 +156,19 @@ namespace WpfHelloWorld
         public void InitmasVelocity(out Position[] m)
         {
             m = new Position[N];
-            int v0 = 10;
+            int v0 = 160;
             Random rand = new Random();
 
             for (int i = 0; i < N; i++)
             {
-                m[i].X = v0 * rand.NextDouble();
-                m[i].Y = v0 * rand.NextDouble();
+                m[i].X = v0 *(2* rand.NextDouble()-1);
+                m[i].Y = v0 * (2 * rand.NextDouble() - 1);
             }
         }
         public void InitmasAcceleratio(out Position[] m)
         {
             m = new Position[N];
-            int a0 = 2;
+            int a0 = 20;
             Random rand = new Random();
             for (int i = 0; i < N; i++)
             {
@@ -214,12 +214,12 @@ namespace WpfHelloWorld
 
         public  void Verlet(Position[] poss, Position[] vels, Position[] accels)
         {
-            var deltaT = 0.1;
+            var deltaT = 0.0000000000000005;
             for (int i = 0; i < N; i++)
             {
                 poss[i] = poss[i] + vels[i] * deltaT + (0.5 * accels[i] * (deltaT * deltaT));
                 Periodic(ref poss[i],340,340);
-               //if (!ProverkaPos())
+                //ProverkaPos();
                //{
                  //   poss[i].X = poss[i].X + deltax;
                    // poss[i].Y = poss[i].Y + deltay;
