@@ -136,8 +136,8 @@ namespace WpfHelloWorld
         public static void InitmasPosition(out Position[] m)
         {
             m = new Position[N];
-            int x0 = 20;
-            int y0 = 20;
+            int x0 = 19;
+            int y0 = 19;
             double b = 20;
             m[0] = new Position(20, 20);
 
@@ -218,7 +218,7 @@ namespace WpfHelloWorld
 
         public  void Verlet(Position[] poss, Position[] vels, Position[] accels)
         {
-            var deltaT = 0.0000000000000005;
+            var deltaT = 0.00000000000000009;
             for (int i = 0; i < N; i++)
             {
                 poss[i] = poss[i] + vels[i] * deltaT + (0.5 * accels[i] * (deltaT * deltaT));
