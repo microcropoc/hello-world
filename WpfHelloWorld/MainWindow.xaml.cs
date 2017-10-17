@@ -53,8 +53,8 @@ namespace WpfHelloWorld
         long time = 0;
         DispatcherTimer timer;
         const int N = 225;
-        //const int Lx = 640;
-       // const int Ly = 480;
+        const int Lx = 320;
+        const int Ly = 320;
         static Position[] massPosition;
         static double x = 20;
         static double y = 20;
@@ -156,24 +156,24 @@ namespace WpfHelloWorld
         public void InitmasVelocity(out Position[] m)
         {
             m = new Position[N];
-            int v0 = 10;
+            int v0 = 100;
             Random rand = new Random();
 
             for (int i = 0; i < N; i++)
             {
-                m[i].X = v0 * rand.NextDouble();
-                m[i].Y = v0 * rand.NextDouble();
+                m[i].X = v0 * (2*rand.NextDouble() -1);
+                m[i].Y = v0 * (2*rand.NextDouble()-2);
             }
         }
         public void InitmasAcceleratio(out Position[] m)
         {
             m = new Position[N];
-            int a0 = 2;
+            int a0 = 20;
             Random rand = new Random();
             for (int i = 0; i < N; i++)
             {
-                m[i].X = a0 * rand.NextDouble();
-                m[i].Y = a0 * rand.NextDouble();
+                m[i].X = a0 * (2*rand.NextDouble()-1);
+                m[i].Y = a0 * (2*rand.NextDouble()-1);
             }
         }
 
@@ -189,7 +189,9 @@ namespace WpfHelloWorld
                     double pot;
                     Force(r, out f, out pot);
                     masaccel[i] = masaccel[i] + f * d;
-                    masaccel[i] = masaccel[i] + f * d;
+                    masaccel[i] = masaccel[i] - f * d;
+                    masaccel[j] = masaccel[j] + f * d;
+                    masaccel[j] = masaccel[j] - f * d;
                     pe += pot;
                 }
         }
@@ -214,11 +216,11 @@ namespace WpfHelloWorld
 
         public  void Verlet(Position[] poss, Position[] vels, Position[] accels)
         {
-            var deltaT = 0.1;
+            var deltaT = 0.005;
             for (int i = 0; i < N; i++)
             {
                 poss[i] = poss[i] + vels[i] * deltaT + (0.5 * accels[i] * (deltaT * deltaT));
-                Periodic(ref poss[i],340,340);
+                Periodic(ref poss[i],Lx,Ly);
                //if (!ProverkaPos())
                //{
                  //   poss[i].X = poss[i].X + deltax;
@@ -229,13 +231,13 @@ namespace WpfHelloWorld
             {
                 vels[i] = vels[i] + (0.5 * accels[i] * deltaT);
             }
-            double pe = 1;
+            double pe = 100;
             Accel(poss, accels, ref pe);
             for (int i = 0; i < N; i++)
             {
                 vels[i] = vels[i] + (0.5 * accels[i] * deltaT);
 
-                double ke = 1;
+                double ke = 100;
                 ke = ke + 0.5 * (Math.Pow(vels[i].X, 2) + Math.Pow(vels[i].Y, 2));
             }
 
@@ -243,10 +245,24 @@ namespace WpfHelloWorld
 
         public void Periodic(ref Position pos, int Lx, int Ly)
         {
-            
-
-            pos.X = Math.Abs(((pos.X * 100) % (Lx * 100)) / 100);
-            pos.Y = Math.Abs(((pos.Y * 100) % (Ly * 100)) / 100);
+            if (pos.X>Lx)
+            {
+                pos.X = pos.X - Lx;
+            }
+            if (pos.X<0)
+            {
+                pos.X = pos.X + Lx;
+            }
+            if (pos.Y < 0)
+            {
+                pos.Y = pos.Y + Lx;
+            }
+            if (pos.Y > Ly)
+            {
+                pos.Y = pos.Y - Lx;
+            }
+            //pos.X = Math.Abs(((pos.X * 100) % (Lx * 100)) / 100);
+            //pos.Y = Math.Abs(((pos.Y * 100) % (Ly * 100)) / 100);
         }
         public bool ProverkaPos(out double deltax,out double deltay)
         {
