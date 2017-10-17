@@ -221,11 +221,16 @@ namespace WpfHelloWorld
             {
                 poss[i] = poss[i] + vels[i] * deltaT + (0.5 * accels[i] * (deltaT * deltaT));
                 Periodic(ref poss[i],Lx,Ly);
-               //if (!ProverkaPos())
-               //{
-                 //   poss[i].X = poss[i].X + deltax;
-                   // poss[i].Y = poss[i].Y + deltay;
-               //}
+                for (int j = 0; j < N - 1; j++)
+                for (int k = (j + 1); k < N; k++)
+                {
+                   double diff;
+                   if(CheckCollision(ref poss[j],ref poss[k],out diff))
+                   {
+                        ResolveCollision(ref poss[j], ref poss[k], diff);
+                   } 
+                }
+
             }
             for (int i = 0; i < N; i++)
             {
@@ -261,31 +266,33 @@ namespace WpfHelloWorld
             {
                 pos.Y = pos.Y - Lx;
             }
-            //pos.X = Math.Abs(((pos.X * 100) % (Lx * 100)) / 100);
-            //pos.Y = Math.Abs(((pos.Y * 100) % (Ly * 100)) / 100);
         }
-        public bool ProverkaPos(out double deltax,out double deltay)
+        public bool CheckCollision(ref Position p1,ref Position p2, out double diff)
         {
-            deltax = 0;
-            deltay = 0;
-            double dx=0;
-            double dy=0;
-            for (int i = 0; i < N; i++)
-            {
-                dx = dx - massPosition[i].X;
-                dy = dy - massPosition[i].Y;
             
-            }
-            if (Math.Abs(dx) < 20)
+            int d = 15;
+            diff = Math.Sqrt(Math.Pow(p1.X-p2.X,2)+ Math.Pow(p1.Y - p2.Y, 2)); //   d = √((хА – хВ)2 + (уА – уВ)2),
+
+            if(diff < d)
             {
-                return false;
-            }
-            if (Math.Abs(dy) < 20)
-            {
-                return false;
+                return true;
             }
 
-            return true;
+            return false;
+        }
+
+        public void ResolveCollision(ref Position p1, ref Position p2, double diff)
+        {
+            int d = 20;
+            Vector vecP1 = new Vector(p1.X, p1.Y) - new Vector(p2.X,p2.Y);
+            Vector vecP2 = new Vector(p2.X, p2.Y) - new Vector(p1.X, p1.Y);
+            vecP1.Normalize();
+            vecP2.Normalize();
+            p1.X += diff / 2 * -vecP1.X;
+            p1.Y += diff / 2 * vecP1.Y;
+            p2.X += diff / 2 * -vecP2.X;
+            p2.Y += diff / 2 * vecP2.Y;
+
         }
 
         #region oldmainwindow
