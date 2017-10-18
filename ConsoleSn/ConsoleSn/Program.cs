@@ -67,8 +67,8 @@ namespace ConsoleSn
         //forDisplay
         static int[,] field;
         static Direction curDirect;
-        static int X;
-        static int Y;
+        static int maxX;
+        static int maxY;
         static bool isExit = false;
         static Timer gameTimer;
         //forInitFood
@@ -77,14 +77,14 @@ namespace ConsoleSn
         static void Main(string[] args)
         {
             CursorVisible = false;
-            Y = WindowHeight;
-            X = WindowWidth;
-            field = new int[Y,X];
+            maxY = WindowHeight;
+            maxX = WindowWidth;
+            field = new int[maxY,maxX];
 
             //initSnake
             #region initSnakeAndFood
 
-            Point head = new Point(X / 2, Y / 2);
+            Point head = new Point(maxX / 2, maxY / 2);
             snake = new List<Point>()
             {
                 head,
@@ -99,16 +99,13 @@ namespace ConsoleSn
                 new Point(head.X + 9, head.Y)
             };
 
-            do
-            {
-                food = new Point(randForFood.Next(X + 1), randForFood.Next(Y + 1));
-            } while (snake.Any(p=>p==food));
+            GenFood();
             #endregion
 
             //initDirect
             curDirect = Direction.Left;
 
-            gameTimer = new Timer(gameLoop,null,0,100);
+            gameTimer = new Timer(gameLoop,null,0,50);
 
             #region loopReadKey
             do
@@ -153,19 +150,19 @@ namespace ConsoleSn
             switch(curDirect)
             {
                 case Direction.Top:
-                    snake[0]=new Point(snake[0].X, (snake[0].Y+1)%Y);
+                    snake[0]=new Point(snake[0].X, (snake[0].Y+1)%maxY);
                     break;
 
                 case Direction.Down:
-                    snake[0] = new Point(snake[0].X, (snake[0].Y - 1)<0?Y-1: (snake[0].Y - 1));
+                    snake[0] = new Point(snake[0].X, (snake[0].Y - 1)<0?maxY-1: (snake[0].Y - 1));
                     break;
 
                 case Direction.Left:
-                    snake[0] = new Point((snake[0].X - 1)<0? X-1: (snake[0].X - 1), snake[0].Y);
+                    snake[0] = new Point((snake[0].X - 1)<0? maxX-1: (snake[0].X - 1), snake[0].Y);
                     break;
 
                 case Direction.Right:
-                    snake[0] = new Point((snake[0].X + 1) % X, snake[0].Y);
+                    snake[0] = new Point((snake[0].X + 1) % maxX, snake[0].Y);
                     break;
             }
 
@@ -187,14 +184,19 @@ namespace ConsoleSn
             if(snake[0]==food)
             {
                 snake.Add(shadowTail);
-                //genFood
-                do
-                {
-                    food = new Point(randForFood.Next(X + 1), randForFood.Next(Y + 1));
-                } while (snake.Any(p => p == food));
+                GenFood();
             }
 
             Display();
+        }
+
+        public static void GenFood()
+        {
+            //genFood
+            do
+            {
+                food = new Point(randForFood.Next(maxX), randForFood.Next(maxY));
+            } while (snake.Any(p => p == food));
         }
 
         #region DisplayMethods
@@ -242,17 +244,17 @@ namespace ConsoleSn
             foreach (var i in snake)
             {
                 //разница между координатной сеткой и матрицей
-                field[Math.Abs(i.Y - (Y - 1)), i.X] = 1;
+                field[Math.Abs(i.Y - (maxY - 1)), i.X] = 1;
             }
 
-            field[Math.Abs(food.Y - (Y - 1)), food.X] = 2;
+            field[Math.Abs(food.Y - (maxY - 1)), food.X] = 2;
 
             #endregion
 
             //RenderMAtrix
-            for (int i = 0; i < Y; i++)
+            for (int i = 0; i < maxY; i++)
             {
-                for (int j = 0; j < X; j++)
+                for (int j = 0; j < maxX; j++)
                 {
                     switch (field[i,j])
                     {
