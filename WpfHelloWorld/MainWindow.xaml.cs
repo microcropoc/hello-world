@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using static System.Math;
 
 namespace WpfHelloWorld
 {
@@ -181,20 +182,27 @@ namespace WpfHelloWorld
         public void Accel(Position[] maspos, Position[] masaccel, ref double pe)
         {
             for (int i = 0; i < N - 1; i++)
+            {
+                Position force;
                 for (int j = (i + 1); j < N; j++)
                 {
                     Position d = maspos[i] - maspos[j];
                     Separation(ref d);
-                    var r = Math.Sqrt(Math.Pow(d.X, 2) + Math.Pow(d.Y, 2));
-                    double f;
-                    double pot;
-                    Force(r, out f, out pot);
-                    masaccel[i] = masaccel[i] + f * d;
-                    masaccel[i] = masaccel[i] - f * d;
-                    masaccel[j] = masaccel[j] + f * d;
-                    masaccel[j] = masaccel[j] - f * d;
-                    pe += pot;
+                    var r = Math.Pow(d.X, 2) + Math.Pow(d.Y, 2);
+                    force.X = force.X - 4 * dp * (6 * Math.Pow(ap, 6)) * d.X / (Pow(r, 4) - 12 * d.X * Math.Pow(ap, 12) / Pow(d.X,7));
+                    //force=force-4*dp*(6*Math.Pow(ap,6))*d/
+                    //double f;
+                    //double pot;
+                    //Force(r, out f, out pot);
+                    //masaccel[i] = masaccel[i] + f * d;
+                    //masaccel[i] = masaccel[i] - f * d;
+                    //masaccel[j] = masaccel[j] + f * d;
+                    //masaccel[j] = masaccel[j] - f * d;
+                    //pe += pot;
                 }
+                massacceleratio[i].X = force.X;
+                massacceleratio[i].Y = force.Y;
+            }
         }
         public  void Force(double r, out double f, out double pot)
         {
