@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
 using static System.Console;
 
@@ -64,14 +62,10 @@ namespace ConsoleSn
     class Program
     {
         static List<Point> snake;
-        //forDisplay
-        static int[,] field;
         static Direction curDirect;
         static int maxX;
         static int maxY;
-        static bool isExit = false;
         static Timer gameTimer;
-        //forInitFood
         static Random randForFood = new Random();
         static Point food;
         static int speedSnake;
@@ -88,9 +82,7 @@ namespace ConsoleSn
             initSetting();
             maxY = WindowHeight;
             maxX = WindowWidth;
-            field = new int[maxY,maxX];
 
-            //initSnake
             #region initSnakeAndFood
 
             Point head = new Point(maxX / 2, maxY / 2);
@@ -109,8 +101,10 @@ namespace ConsoleSn
             };
 
             GenFood();
+
             #endregion
 
+            initDisplay();
             //initDirect
             curDirect = Direction.Left;
 
@@ -145,11 +139,9 @@ namespace ConsoleSn
                             curDirect = Direction.Right;
                         }
                         break;
-                    case ConsoleKey.Escape:
-                        isExit = true;
-                        break;
                 }
-            } while (!isExit);
+
+            } while (true);
             #endregion
         }
 
@@ -210,81 +202,35 @@ namespace ConsoleSn
 
         #region DisplayMethods
 
-        /// <summary>
-        /// item1->i
-        /// item2->j
-        /// </summary>
-        static List<Tuple<int, int>> histList = new List<Tuple<int, int>>(); 
-        static void ClearConAndField()
-        {
-            var deleteObjs = histList.ToList();
-            foreach (var i in deleteObjs)
-            {
-                SetCursorPosition(i.Item2, i.Item1);
-                field[i.Item1, i.Item2] = 0;
-                Write('.');
-            }
-            histList.RemoveAll(p=>deleteObjs.Any(j=>j.Item1==p.Item1 && j.Item2==p.Item2));
-        }
+        static Point lastFood;
+        static Point shadowTail;
 
-        Point shadowTail;
-        int snakeLong;
+        static void initDisplay()
+        {
+            //init lastFood with unreal position
+            lastFood = new Point(maxX,maxY);
+            shadowTail = snake[snake.Count - 1];
+        }
 
         static void Display()
         {
-            ClearConAndField();
+            //write head
+            var head = snake[0];
+            SetCursorPosition(head.X, Math.Abs(head.Y - (maxY - 1)));
+            Write("#");
 
-            #region oldClear
-
-            //for (int i = 0; i < Y; i++)
-            //{
-            //    for (int j = 0; j < X; j++)
-            //    {
-            //        field[i, j] = 0;
-            //    }
-            //}
-
-            //Clear();
-
-            #endregion
-
-            #region AddObjToField
-
-            //disSnakeToMatrix
-            foreach (var i in snake)
+            if (lastFood == food)
             {
-                //разница между координатной сеткой и матрицей
-                field[Math.Abs(i.Y - (maxY - 1)), i.X] = 1;
+                SetCursorPosition(shadowTail.X, Math.Abs(shadowTail.Y - (maxY - 1)));
+                Write('.');
             }
-
-            field[Math.Abs(food.Y - (maxY - 1)), food.X] = 2;
-
-            #endregion
-
-            //RenderMAtrix
-            for (int i = 0; i < maxY; i++)
+            else
             {
-                for (int j = 0; j < maxX; j++)
-                {
-                    switch (field[i,j])
-                    {
-                        //cellSnake
-                        case 1:
-                            SetCursorPosition(j, i);
-                            Write("#");
-                            histList.Add(new Tuple<int, int>(i, j));
-                            break;
-                        //food
-                        case 2:
-                            SetCursorPosition(j, i);
-                            Write("$");
-                            histList.Add(new Tuple<int, int>(i, j));
-                            break;
-                        default:
-                            break;
-                    }
-                }
+                lastFood = food;
+                SetCursorPosition(food.X, Math.Abs(food.Y - (maxY - 1)));
+                Write("$");
             }
+            shadowTail = snake[snake.Count - 1];
         }
 
         #endregion
