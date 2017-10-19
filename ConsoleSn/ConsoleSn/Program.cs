@@ -74,9 +74,18 @@ namespace ConsoleSn
         //forInitFood
         static Random randForFood = new Random();
         static Point food;
+        static int speedSnake;
+
+        static void initSetting()
+        {
+            speedSnake = 70;
+            WindowHeight = 20;
+            WindowWidth = 50;
+            CursorVisible = false;
+        }
         static void Main(string[] args)
         {
-            CursorVisible = false;
+            initSetting();
             maxY = WindowHeight;
             maxX = WindowWidth;
             field = new int[maxY,maxX];
@@ -105,7 +114,7 @@ namespace ConsoleSn
             //initDirect
             curDirect = Direction.Left;
 
-            gameTimer = new Timer(gameLoop,null,0,50);
+            gameTimer = new Timer(gameLoop,null,0, speedSnake);
 
             #region loopReadKey
             do
@@ -213,7 +222,7 @@ namespace ConsoleSn
             {
                 SetCursorPosition(i.Item2, i.Item1);
                 field[i.Item1, i.Item2] = 0;
-                Write(' ');
+                Write('.');
             }
             histList.RemoveAll(p=>deleteObjs.Any(j=>j.Item1==p.Item1 && j.Item2==p.Item2));
         }
@@ -223,7 +232,8 @@ namespace ConsoleSn
 
         static void Display()
         {
-             ClearConAndField();
+            ClearConAndField();
+
             #region oldClear
 
             //for (int i = 0; i < Y; i++)
