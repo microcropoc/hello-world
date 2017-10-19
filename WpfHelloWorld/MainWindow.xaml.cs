@@ -50,12 +50,11 @@ namespace WpfHelloWorld
     }
     public partial class MainWindow : Window
     {
-        const int D = 20;
         long time = 0;
         DispatcherTimer timer;
-        const int N = 25;
-        const int Lx = 100;
-        const int Ly = 100;
+        const int N = 225;
+        const int Lx = 320;
+        const int Ly = 320;
         static Position[] massPosition;
         static double x = 20;
         static double y = 20;
@@ -120,8 +119,8 @@ namespace WpfHelloWorld
                 var ell = new Ellipse()
                 {
                     Fill = Brushes.Indigo,
-                    Height = D/2,
-                    Width = D/2
+                    Height = 20,
+                    Width = 20
                 };
                 Canvas.SetTop(ell, massPosition[i].Y);
                 Canvas.SetLeft(ell, massPosition[i].X);
@@ -217,20 +216,20 @@ namespace WpfHelloWorld
 
         public  void Verlet(Position[] poss, Position[] vels, Position[] accels)
         {
-            var deltaT = 0.009;
+            var deltaT = 0.005;
             for (int i = 0; i < N; i++)
             {
                 poss[i] = poss[i] + vels[i] * deltaT + (0.5 * accels[i] * (deltaT * deltaT));
                 Periodic(ref poss[i],Lx,Ly);
-                //for (int j = 0; j < N - 1; j++)
-                //for (int k = (j + 1); k < N; k++)
-                //{
-                //   double diff;
-                //   //if(CheckCollision(ref poss[j],ref poss[k],out diff))
-                //   //{
-                //   //     ResolveCollision(ref poss[j], ref poss[k], diff);
-                //   //} 
-                //}
+                for (int j = 0; j < N - 1; j++)
+                for (int k = (j + 1); k < N; k++)
+                {
+                   double diff;
+                   if(CheckCollision(ref poss[j],ref poss[k],out diff))
+                   {
+                        ResolveCollision(ref poss[j], ref poss[k], diff);
+                   } 
+                }
 
             }
             for (int i = 0; i < N; i++)
@@ -268,33 +267,33 @@ namespace WpfHelloWorld
                 pos.Y = pos.Y - Lx;
             }
         }
-        //public bool CheckCollision(ref Position p1,ref Position p2, out double diff)
-        //{
+        public bool CheckCollision(ref Position p1,ref Position p2, out double diff)
+        {
             
-            
-        //    diff = Math.Sqrt(Math.Pow(p1.X-p2.X,2)+ Math.Pow(p1.Y - p2.Y, 2)); //   d = √((хА – хВ)2 + (уА – уВ)2),
+            int d = 15;
+            diff = Math.Sqrt(Math.Pow(p1.X-p2.X,2)+ Math.Pow(p1.Y - p2.Y, 2)); //   d = √((хА – хВ)2 + (уА – уВ)2),
 
-        //    if(diff < D)
-        //    {
-        //        return true;
-        //    }
+            if(diff < d)
+            {
+                return true;
+            }
 
-        //    return false;
-        //}
+            return false;
+        }
 
-        //public void ResolveCollision(ref Position p1, ref Position p2, double diff)
-        //{
-            
-        //    Vector vecP1 = new Vector(p1.X, p1.Y) - new Vector(p2.X,p2.Y);
-        //    Vector vecP2 = new Vector(p2.X, p2.Y) - new Vector(p1.X, p1.Y);
-        //    vecP1.Normalize();
-        //    vecP2.Normalize();
-        //    p1.X += diff / 2 * -vecP1.X;
-        //    p1.Y += diff / 2 * vecP1.Y;
-        //    p2.X += diff / 2 * -vecP2.X;
-        //    p2.Y += diff / 2 * vecP2.Y;
+        public void ResolveCollision(ref Position p1, ref Position p2, double diff)
+        {
+            int d = 20;
+            Vector vecP1 = new Vector(p1.X, p1.Y) - new Vector(p2.X,p2.Y);
+            Vector vecP2 = new Vector(p2.X, p2.Y) - new Vector(p1.X, p1.Y);
+            vecP1.Normalize();
+            vecP2.Normalize();
+            p1.X += diff / 2 * -vecP1.X;
+            p1.Y += diff / 2 * vecP1.Y;
+            p2.X += diff / 2 * -vecP2.X;
+            p2.Y += diff / 2 * vecP2.Y;
 
-        //}
+        }
 
         #region oldmainwindow
         //public partial class MainWindow : Window
