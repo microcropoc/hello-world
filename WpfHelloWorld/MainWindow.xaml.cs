@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using static System.Math;
 
 namespace WpfHelloWorld
 {
@@ -50,17 +51,12 @@ namespace WpfHelloWorld
     }
     public partial class MainWindow : Window
     {
+        const int D = 20;
         long time = 0;
         DispatcherTimer timer;
-<<<<<<< HEAD
-        const int N = 225;
-        const int Lx = 320;
-        const int Ly = 320;
-=======
-        const int N = 25;
-        const int Lx = 100;
-        const int Ly = 100;
->>>>>>> parent of 5dc6cdf... actually V1
+        const int N = 144;
+        const int Lx = 300;
+        const int Ly = 300;
         static Position[] massPosition;
         static double x = 20;
         static double y = 20;
@@ -84,19 +80,19 @@ namespace WpfHelloWorld
             timer.Interval = new TimeSpan(0, 0, 1);
             Display();
         }
-        
+
 
         //Вызывается через заданный интервал
         private void Timer_Tick(object sender, EventArgs e)
         {
-           // Stopwatch stopWatch = new Stopwatch();
-           // stopWatch.Start();
+            // Stopwatch stopWatch = new Stopwatch();
+            // stopWatch.Start();
             Verlet(massPosition, massVelocity, massacceleratio);
             Display();
             time = time + 1;
             txtTime.Text = time.ToString();
-           // stopWatch.Stop();
-           // var diagTime = stopWatch.ElapsedMilliseconds;
+            // stopWatch.Stop();
+            // var diagTime = stopWatch.ElapsedMilliseconds;
         }
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
@@ -115,7 +111,7 @@ namespace WpfHelloWorld
             timer.Stop();
         }
 
-       
+
 
         void Display()
         {
@@ -125,13 +121,8 @@ namespace WpfHelloWorld
                 var ell = new Ellipse()
                 {
                     Fill = Brushes.Indigo,
-<<<<<<< HEAD
-                    Height = 20,
-                    Width = 20
-=======
-                    Height = D/2,
-                    Width = D/2
->>>>>>> parent of 5dc6cdf... actually V1
+                    Height = D,
+                    Width = D
                 };
                 Canvas.SetTop(ell, massPosition[i].Y);
                 Canvas.SetLeft(ell, massPosition[i].X);
@@ -148,12 +139,12 @@ namespace WpfHelloWorld
             double b = 20;
             m[0] = new Position(20, 20);
 
-            int dem =(int) Math.Sqrt(N);
+            int dem = (int)Math.Sqrt(N);
             int j = 0;
             int k = 0;
             for (int i = 0; i < N; i++)
             {
-                if(i%dem==0)
+                if (i % dem == 0)
                 {
                     j++;
                     k = 0;
@@ -161,78 +152,72 @@ namespace WpfHelloWorld
                 m[i].X = x0 + k * b;        //иксы
                 m[i].Y = y0 + j * b;       // игреки
                 k++;
-            }            
+            }
         }
 
         public void InitmasVelocity(out Position[] m)
         {
             m = new Position[N];
-            int v0 = 100;
+            int v0 = 10;
             Random rand = new Random();
 
             for (int i = 0; i < N; i++)
             {
-                m[i].X = v0 * (2*rand.NextDouble() -1);
-                m[i].Y = v0 * (2*rand.NextDouble()-2);
+                m[i].X = v0 * (2 * rand.NextDouble() - 1);
+                m[i].Y = v0 * (2 * rand.NextDouble() - 2);
             }
         }
         public void InitmasAcceleratio(out Position[] m)
         {
             m = new Position[N];
-            int a0 = 20;
+            int a0 = 9;
             Random rand = new Random();
             for (int i = 0; i < N; i++)
             {
-                m[i].X = a0 * (2*rand.NextDouble()-1);
-                m[i].Y = a0 * (2*rand.NextDouble()-1);
+                m[i].X = a0 * (2 * rand.NextDouble() - 1);
+                m[i].Y = a0 * (2 * rand.NextDouble() - 1);
             }
         }
 
         public void Accel(Position[] maspos, Position[] masaccel, ref double pe)
         {
+            double ap = 20;
+            double dp = 22;
             for (int i = 0; i < N - 1; i++)
-<<<<<<< HEAD
-=======
             {
-                Position force;
->>>>>>> parent of 5dc6cdf... actually V1
-                for (int j = (i + 1); j < N; j++)
+                Position force = new Position();
+                for (int j = 0; j < N; j++)
                 {
-                    Position d = maspos[i] - maspos[j];
-                    Separation(ref d);
-<<<<<<< HEAD
-                    var r = Math.Sqrt(Math.Pow(d.X, 2) + Math.Pow(d.Y, 2));
-                    double f;
-                    double pot;
-                    Force(r, out f, out pot);
-                    masaccel[i] = masaccel[i] + f * d;
-                    masaccel[i] = masaccel[i] - f * d;
-                    masaccel[j] = masaccel[j] + f * d;
-                    masaccel[j] = masaccel[j] - f * d;
-                    pe += pot;
-=======
-                    var r = Math.Pow(d.X, 2) + Math.Pow(d.Y, 2);
-                    force.X = force.X - 4 * dp * (6 * Math.Pow(ap, 6)) * d.X / (Pow(r, 4) - 12 * d.X * Math.Pow(ap, 12) / Pow(d.X,7));
-                    //force=force-4*dp*(6*Math.Pow(ap,6))*d/
-                    //double f;
-                    //double pot;
-                    //Force(r, out f, out pot);
-                    //masaccel[i] = masaccel[i] + f * d;
-                    //masaccel[i] = masaccel[i] - f * d;
-                    //masaccel[j] = masaccel[j] + f * d;
-                    //masaccel[j] = masaccel[j] - f * d;
-                    //pe += pot;
->>>>>>> parent of 5dc6cdf... actually V1
-                }
-        }
-        public  void Force(double r, out double f, out double pot)
-        {
-            double g = 24 * (1 / r) * (Math.Pow(r, 6) * (2 * (Math.Pow(r, 6) - 1)));
-            f = g / r;
-            pot = 4 * (Math.Pow(r, 6) * (Math.Pow(r, 6) - 1));
+                    if (i != j)
+                    {
+                        Position d = maspos[i] - maspos[j];
+                        Separation(ref d);
+                        var r = Math.Pow(d.X, 2) + Math.Pow(d.Y, 2);
+                        force.X = force.X - 4 * dp * (6 * Math.Pow(ap, 6)) * d.X / (Pow(r, 4) - 12 * d.X * Math.Pow(ap, 12) / Pow(d.X, 7));
+                        force.Y = force.Y - 4 * dp * (6 * Math.Pow(ap, 6)) * d.Y / (Pow(r, 4) - 12 * d.Y * Math.Pow(ap, 12) / Pow(d.Y, 7));
 
+                        //double f;
+                        //double pot;
+                        //Force(r, out f, out pot);
+                        //masaccel[i] = masaccel[i] + f * d;
+                        //masaccel[i] = masaccel[i] - f * d;
+                        //masaccel[j] = masaccel[j] + f * d;
+                        //masaccel[j] = masaccel[j] - f * d;
+                        //pe += pot;
+                    }
+                }
+                massacceleratio[i].X = force.X;
+                massacceleratio[i].Y = force.Y;
+            }
         }
-        public  void Separation(ref Position d)
+        //public void Force(double r, out double f, out double pot)
+        //{
+        //    double g = 24 * (1 / r) * (Math.Pow(r, 6) * (2 * (Math.Pow(r, 6) - 1)));
+        //    f = g / r;
+        //    pot = 4 * (Math.Pow(r, 6) * (Math.Pow(r, 6) - 1));
+
+        //}
+        public void Separation(ref Position d)
         {
             if (Math.Abs(d.X) > 0.5 * (int)myCanvas.ActualWidth)
             {
@@ -244,47 +229,35 @@ namespace WpfHelloWorld
             }
         }
 
-        public  void Verlet(Position[] poss, Position[] vels, Position[] accels)
+        public void Verlet(Position[] poss, Position[] vels, Position[] accels)
         {
-            var deltaT = 0.009;
+            var deltaT = 0.0000009;
             for (int i = 0; i < N; i++)
             {
                 poss[i] = poss[i] + vels[i] * deltaT + (0.5 * accels[i] * (deltaT * deltaT));
-                Periodic(ref poss[i],Lx,Ly);
-<<<<<<< HEAD
-                for (int j = 0; j < N - 1; j++)
-                for (int k = (j + 1); k < N; k++)
-                {
-                   double diff;
-                   if(CheckCollision(ref poss[j],ref poss[k],out diff))
-                   {
-                        ResolveCollision(ref poss[j], ref poss[k], diff);
-                   } 
-                }
-=======
-                //for (int j = 0; j < N - 1; j++)
-                //for (int k = (j + 1); k < N; k++)
-                //{
-                //   double diff;
-                //   //if(CheckCollision(ref poss[j],ref poss[k],out diff))
-                //   //{
-                //   //     ResolveCollision(ref poss[j], ref poss[k], diff);
-                //   //} 
-                //}
->>>>>>> parent of 5dc6cdf... actually V1
 
+
+                for (int k = (i + 1); k < N; k++)
+                {
+                    double diff;
+                    if (CheckCollision(ref poss[i], ref poss[k], out diff))
+                    {
+                        ResolveCollision(ref poss[i], ref poss[k], diff);
+                    }
+                }
+                Periodic(ref poss[i], Lx, Ly);
             }
             for (int i = 0; i < N; i++)
             {
                 vels[i] = vels[i] + (0.5 * accels[i] * deltaT);
             }
-            double pe = 100;
+            double pe = 1;
             Accel(poss, accels, ref pe);
             for (int i = 0; i < N; i++)
             {
                 vels[i] = vels[i] + (0.5 * accels[i] * deltaT);
 
-                double ke = 100;
+                double ke = 0;
                 ke = ke + 0.5 * (Math.Pow(vels[i].X, 2) + Math.Pow(vels[i].Y, 2));
             }
 
@@ -292,11 +265,11 @@ namespace WpfHelloWorld
 
         public void Periodic(ref Position pos, int Lx, int Ly)
         {
-            if (pos.X>Lx)
+            if (pos.X > Lx)
             {
                 pos.X = pos.X - Lx;
             }
-            if (pos.X<0)
+            if (pos.X < 0)
             {
                 pos.X = pos.X + Lx;
             }
@@ -309,134 +282,31 @@ namespace WpfHelloWorld
                 pos.Y = pos.Y - Lx;
             }
         }
-<<<<<<< HEAD
-        public bool CheckCollision(ref Position p1,ref Position p2, out double diff)
+        public bool CheckCollision(ref Position p1, ref Position p2, out double diff)
         {
-            
-            int d = 15;
-            diff = Math.Sqrt(Math.Pow(p1.X-p2.X,2)+ Math.Pow(p1.Y - p2.Y, 2)); //   d = √((хА – хВ)2 + (уА – уВ)2),
 
-            if(diff < d)
+
+            diff = Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2)); //   d = √((хА – хВ)2 + (уА – уВ)2),
+
+            if (diff < D)
             {
                 return true;
             }
-=======
-        //public bool CheckCollision(ref Position p1,ref Position p2, out double diff)
-        //{
-            
-            
-        //    diff = Math.Sqrt(Math.Pow(p1.X-p2.X,2)+ Math.Pow(p1.Y - p2.Y, 2)); //   d = √((хА – хВ)2 + (уА – уВ)2),
->>>>>>> parent of 5dc6cdf... actually V1
 
-        //    if(diff < D)
-        //    {
-        //        return true;
-        //    }
+            return false;
+        }
 
-<<<<<<< HEAD
         public void ResolveCollision(ref Position p1, ref Position p2, double diff)
         {
-            int d = 20;
-            Vector vecP1 = new Vector(p1.X, p1.Y) - new Vector(p2.X,p2.Y);
+
+            Vector vecP1 = new Vector(p1.X, p1.Y) - new Vector(p2.X, p2.Y);
             Vector vecP2 = new Vector(p2.X, p2.Y) - new Vector(p1.X, p1.Y);
             vecP1.Normalize();
             vecP2.Normalize();
-            p1.X += diff / 2 * -vecP1.X;
+            p1.X += diff / 2 * vecP1.X;
             p1.Y += diff / 2 * vecP1.Y;
-            p2.X += diff / 2 * -vecP2.X;
+            p2.X += diff / 2 * vecP2.X;
             p2.Y += diff / 2 * vecP2.Y;
-=======
-        //    return false;
-        //}
-
-        //public void ResolveCollision(ref Position p1, ref Position p2, double diff)
-        //{
-            
-        //    Vector vecP1 = new Vector(p1.X, p1.Y) - new Vector(p2.X,p2.Y);
-        //    Vector vecP2 = new Vector(p2.X, p2.Y) - new Vector(p1.X, p1.Y);
-        //    vecP1.Normalize();
-        //    vecP2.Normalize();
-        //    p1.X += diff / 2 * -vecP1.X;
-        //    p1.Y += diff / 2 * vecP1.Y;
-        //    p2.X += diff / 2 * -vecP2.X;
-        //    p2.Y += diff / 2 * vecP2.Y;
->>>>>>> parent of 5dc6cdf... actually V1
-
-        //}
-
-        #region oldmainwindow
-        //public partial class MainWindow : Window
-        //{
-        //    const int N = 20;
-        //    Point[,] masElement = new Point[N, N];
-        //    long time = 0;
-
-        //    DispatcherTimer timer;
-
-        //    public MainWindow()
-        //    {
-        //        InitializeComponent();
-        //        //init timer
-        //        timer = new DispatcherTimer();
-        //        timer.Tick += Timer_Tick;
-        //        timer.Interval = new TimeSpan(0, 0, 1);
-        //    }
-
-
-        //    //Вызывается через заданный интервал
-        //    private void Timer_Tick(object sender, EventArgs e)
-        //    {
-        //        time = time + 1;
-        //        txtTime.Text = time.ToString();
-        //    }
-
-        //    void Display()
-        //    {
-        //        myCanvas.Children.Clear();
-
-        //        for (int i = 0; i < N; i++)
-        //            for (int j = 0; j < N; j++)
-        //            {
-
-        //                var ell = new Ellipse()
-        //                {
-        //                    Fill = Brushes.Indigo,
-        //                    Height = 20,
-        //                    Width = 20
-        //                };
-
-        //                Canvas.SetTop(ell, masElement[i, j].Y);
-        //                Canvas.SetLeft(ell, masElement[i, j].X);
-
-        //                myCanvas.Children.Add(ell);
-
-        //            }
-        //    }
-
-        //    private void btnOK_Click(object sender, RoutedEventArgs e)
-        //    {
-        //        for (int i = 0; i < N; i++)
-        //            for (int j = 0; j < N; j++)
-        //            {
-        //                masElement[i, j].X = i * 20;
-        //                masElement[i, j].Y = j * 30;
-        //            }
-        //        Display();
-        //        timer.Start();
-        //    }
-
-
-        //    private void btnStart_Click(object sender, RoutedEventArgs e)
-        //    {
-        //        timer.Start();
-        //    }
-
-        //    private void btnStop_Click(object sender, RoutedEventArgs e)
-        //    {
-        //        timer.Stop();
-        //    }
-        //}
-        #endregion
+        }
     }
 }
-
