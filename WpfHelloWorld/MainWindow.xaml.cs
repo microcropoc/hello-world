@@ -67,7 +67,8 @@ namespace WpfHelloWorld
         static double ax;
         static double ay;
         static double[] massEnergy;
-        static double pe;
+        static double Pe;
+        static double Ke;
         public MainWindow()
         {
             InitializeComponent();
@@ -170,7 +171,7 @@ namespace WpfHelloWorld
         public void InitmasAcceleratio(out Position[] m)
         {
             m = new Position[N];
-            int a0 = 9;
+            int a0 = 450;
             Random rand = new Random();
             for (int i = 0; i < N; i++)
             {
@@ -231,7 +232,7 @@ namespace WpfHelloWorld
 
         public void Verlet(Position[] poss, Position[] vels, Position[] accels)
         {
-            var deltaT = 0.000000000007;
+            var deltaT = 0.0000000000007;
             for (int i = 0; i < N; i++)
             {
                 poss[i] = poss[i] + vels[i] * deltaT + (0.5 * accels[i] * (deltaT * deltaT));
@@ -259,9 +260,9 @@ namespace WpfHelloWorld
 
                 double ke = 0;
                 ke = ke + 0.5 * (Math.Pow(vels[i].X, 2) + Math.Pow(vels[i].Y, 2));
-                
+                Ke = ke/10000;
             }
-
+            txtKE.Text = Ke.ToString();
         }
 
         public void Periodic(ref Position pos, int Lx, int Ly)
