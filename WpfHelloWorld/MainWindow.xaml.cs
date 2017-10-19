@@ -52,9 +52,15 @@ namespace WpfHelloWorld
     {
         long time = 0;
         DispatcherTimer timer;
+<<<<<<< HEAD
         const int N = 225;
         const int Lx = 320;
         const int Ly = 320;
+=======
+        const int N = 25;
+        const int Lx = 100;
+        const int Ly = 100;
+>>>>>>> parent of 5dc6cdf... actually V1
         static Position[] massPosition;
         static double x = 20;
         static double y = 20;
@@ -119,8 +125,13 @@ namespace WpfHelloWorld
                 var ell = new Ellipse()
                 {
                     Fill = Brushes.Indigo,
+<<<<<<< HEAD
                     Height = 20,
                     Width = 20
+=======
+                    Height = D/2,
+                    Width = D/2
+>>>>>>> parent of 5dc6cdf... actually V1
                 };
                 Canvas.SetTop(ell, massPosition[i].Y);
                 Canvas.SetLeft(ell, massPosition[i].X);
@@ -180,10 +191,16 @@ namespace WpfHelloWorld
         public void Accel(Position[] maspos, Position[] masaccel, ref double pe)
         {
             for (int i = 0; i < N - 1; i++)
+<<<<<<< HEAD
+=======
+            {
+                Position force;
+>>>>>>> parent of 5dc6cdf... actually V1
                 for (int j = (i + 1); j < N; j++)
                 {
                     Position d = maspos[i] - maspos[j];
                     Separation(ref d);
+<<<<<<< HEAD
                     var r = Math.Sqrt(Math.Pow(d.X, 2) + Math.Pow(d.Y, 2));
                     double f;
                     double pot;
@@ -193,6 +210,19 @@ namespace WpfHelloWorld
                     masaccel[j] = masaccel[j] + f * d;
                     masaccel[j] = masaccel[j] - f * d;
                     pe += pot;
+=======
+                    var r = Math.Pow(d.X, 2) + Math.Pow(d.Y, 2);
+                    force.X = force.X - 4 * dp * (6 * Math.Pow(ap, 6)) * d.X / (Pow(r, 4) - 12 * d.X * Math.Pow(ap, 12) / Pow(d.X,7));
+                    //force=force-4*dp*(6*Math.Pow(ap,6))*d/
+                    //double f;
+                    //double pot;
+                    //Force(r, out f, out pot);
+                    //masaccel[i] = masaccel[i] + f * d;
+                    //masaccel[i] = masaccel[i] - f * d;
+                    //masaccel[j] = masaccel[j] + f * d;
+                    //masaccel[j] = masaccel[j] - f * d;
+                    //pe += pot;
+>>>>>>> parent of 5dc6cdf... actually V1
                 }
         }
         public  void Force(double r, out double f, out double pot)
@@ -216,11 +246,12 @@ namespace WpfHelloWorld
 
         public  void Verlet(Position[] poss, Position[] vels, Position[] accels)
         {
-            var deltaT = 0.005;
+            var deltaT = 0.009;
             for (int i = 0; i < N; i++)
             {
                 poss[i] = poss[i] + vels[i] * deltaT + (0.5 * accels[i] * (deltaT * deltaT));
                 Periodic(ref poss[i],Lx,Ly);
+<<<<<<< HEAD
                 for (int j = 0; j < N - 1; j++)
                 for (int k = (j + 1); k < N; k++)
                 {
@@ -230,6 +261,17 @@ namespace WpfHelloWorld
                         ResolveCollision(ref poss[j], ref poss[k], diff);
                    } 
                 }
+=======
+                //for (int j = 0; j < N - 1; j++)
+                //for (int k = (j + 1); k < N; k++)
+                //{
+                //   double diff;
+                //   //if(CheckCollision(ref poss[j],ref poss[k],out diff))
+                //   //{
+                //   //     ResolveCollision(ref poss[j], ref poss[k], diff);
+                //   //} 
+                //}
+>>>>>>> parent of 5dc6cdf... actually V1
 
             }
             for (int i = 0; i < N; i++)
@@ -267,6 +309,7 @@ namespace WpfHelloWorld
                 pos.Y = pos.Y - Lx;
             }
         }
+<<<<<<< HEAD
         public bool CheckCollision(ref Position p1,ref Position p2, out double diff)
         {
             
@@ -277,10 +320,20 @@ namespace WpfHelloWorld
             {
                 return true;
             }
+=======
+        //public bool CheckCollision(ref Position p1,ref Position p2, out double diff)
+        //{
+            
+            
+        //    diff = Math.Sqrt(Math.Pow(p1.X-p2.X,2)+ Math.Pow(p1.Y - p2.Y, 2)); //   d = √((хА – хВ)2 + (уА – уВ)2),
+>>>>>>> parent of 5dc6cdf... actually V1
 
-            return false;
-        }
+        //    if(diff < D)
+        //    {
+        //        return true;
+        //    }
 
+<<<<<<< HEAD
         public void ResolveCollision(ref Position p1, ref Position p2, double diff)
         {
             int d = 20;
@@ -292,8 +345,24 @@ namespace WpfHelloWorld
             p1.Y += diff / 2 * vecP1.Y;
             p2.X += diff / 2 * -vecP2.X;
             p2.Y += diff / 2 * vecP2.Y;
+=======
+        //    return false;
+        //}
 
-        }
+        //public void ResolveCollision(ref Position p1, ref Position p2, double diff)
+        //{
+            
+        //    Vector vecP1 = new Vector(p1.X, p1.Y) - new Vector(p2.X,p2.Y);
+        //    Vector vecP2 = new Vector(p2.X, p2.Y) - new Vector(p1.X, p1.Y);
+        //    vecP1.Normalize();
+        //    vecP2.Normalize();
+        //    p1.X += diff / 2 * -vecP1.X;
+        //    p1.Y += diff / 2 * vecP1.Y;
+        //    p2.X += diff / 2 * -vecP2.X;
+        //    p2.Y += diff / 2 * vecP2.Y;
+>>>>>>> parent of 5dc6cdf... actually V1
+
+        //}
 
         #region oldmainwindow
         //public partial class MainWindow : Window
