@@ -55,8 +55,8 @@ namespace WpfHelloWorld
         long time = 0;
         DispatcherTimer timer;
         const int N = 144;
-        const int Lx = 300;
-        const int Ly = 300;
+        const int Lx = 280;
+        const int Ly = 280;
         static Position[] massPosition;
         static double x = 20;
         static double y = 20;
@@ -158,7 +158,7 @@ namespace WpfHelloWorld
         public void InitmasVelocity(out Position[] m)
         {
             m = new Position[N];
-            int v0 = 10;
+            int v0 = 160;
             Random rand = new Random();
 
             for (int i = 0; i < N; i++)
@@ -181,7 +181,7 @@ namespace WpfHelloWorld
 
         public void Accel(Position[] maspos, Position[] masaccel, ref double pe)
         {
-            double ap = 20;
+            double ap = 24;
             double dp = 22;
             for (int i = 0; i < N - 1; i++)
             {
@@ -231,7 +231,7 @@ namespace WpfHelloWorld
 
         public void Verlet(Position[] poss, Position[] vels, Position[] accels)
         {
-            var deltaT = 0.0000009;
+            var deltaT = 0.000000000007;
             for (int i = 0; i < N; i++)
             {
                 poss[i] = poss[i] + vels[i] * deltaT + (0.5 * accels[i] * (deltaT * deltaT));
@@ -251,7 +251,7 @@ namespace WpfHelloWorld
             {
                 vels[i] = vels[i] + (0.5 * accels[i] * deltaT);
             }
-            double pe = 1;
+            double pe = 10;
             Accel(poss, accels, ref pe);
             for (int i = 0; i < N; i++)
             {
@@ -259,6 +259,7 @@ namespace WpfHelloWorld
 
                 double ke = 0;
                 ke = ke + 0.5 * (Math.Pow(vels[i].X, 2) + Math.Pow(vels[i].Y, 2));
+                
             }
 
         }
