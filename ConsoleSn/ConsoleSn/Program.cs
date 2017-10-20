@@ -70,16 +70,25 @@ namespace ConsoleSn
         static Point food;
         static int speedSnake;
 
-        static void initSetting()
+        static void initSetting(int width,int height)
         {
             speedSnake = 70;
-            WindowHeight = 20;
-            WindowWidth = 50;
+            if(height>0)
+                WindowHeight = height;
+            if(width>0)
+                WindowWidth = width;
             CursorVisible = false;
         }
         static void Main(string[] args)
         {
-            initSetting();
+            int width=0;
+            int height=0;
+            if(args.Length>=2)
+            {
+                int.TryParse(args[0], out width);
+                int.TryParse(args[1], out height);
+            }
+            initSetting(width,height);
             maxY = WindowHeight;
             maxX = WindowWidth;
 
