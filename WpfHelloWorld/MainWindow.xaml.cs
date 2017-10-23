@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OxyPlot;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -82,6 +83,7 @@ namespace WpfHelloWorld
             Display();
         }
 
+        public IList<DataPoint> Points { get; private set; }
 
         //Вызывается через заданный интервал
         private void Timer_Tick(object sender, EventArgs e)
