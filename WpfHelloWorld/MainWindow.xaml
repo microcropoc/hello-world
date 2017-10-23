@@ -23,12 +23,16 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
-                <StackPanel>
+                <StackPanel Grid.Row="0">
                     <TextBlock Text="Кинетическая энергия" FontSize="12" />
                     
-                    <TextBlock Grid.Row="0" TextWrapping="Wrap"  Name="txtKE"/>
+                    <TextBlock  TextWrapping="Wrap"  Name="txtKE"/>
                 </StackPanel>
-                      <TextBlock Grid.Row="1" TextWrapping="Wrap" Name="txtPE"/>
+                <StackPanel Grid.Row="1">
+                    <TextBlock Text="Потенциальная энергия" FontSize="12" />
+                      <TextBlock  TextWrapping="Wrap" Name="txtPE"/>
+                </StackPanel>
+                
             </Grid>
         </Grid>
 

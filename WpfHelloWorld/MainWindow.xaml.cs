@@ -183,7 +183,9 @@ namespace WpfHelloWorld
         public void Accel(Position[] maspos, Position[] masaccel, ref double pe)
         {
             double ap = 24;
-            double dp = 22;
+            double dp = 26;
+
+
             for (int i = 0; i < N - 1; i++)
             {
                 Position force = new Position();
@@ -191,11 +193,18 @@ namespace WpfHelloWorld
                 {
                     if (i != j)
                     {
+
                         Position d = maspos[i] - maspos[j];
                         Separation(ref d);
                         var r = Math.Pow(d.X, 2) + Math.Pow(d.Y, 2);
                         force.X = force.X - 4 * dp * (6 * Math.Pow(ap, 6)) * d.X / (Pow(r, 4) - 12 * d.X * Math.Pow(ap, 12) / Pow(d.X, 7));
                         force.Y = force.Y - 4 * dp * (6 * Math.Pow(ap, 6)) * d.Y / (Pow(r, 4) - 12 * d.Y * Math.Pow(ap, 12) / Pow(d.Y, 7));
+                        Potential(maspos[j]);
+
+
+
+
+
 
                         //double f;
                         //double pot;
@@ -232,7 +241,7 @@ namespace WpfHelloWorld
 
         public void Verlet(Position[] poss, Position[] vels, Position[] accels)
         {
-            var deltaT = 0.0000000000007;
+            var deltaT = 0.0000000000003;
             for (int i = 0; i < N; i++)
             {
                 poss[i] = poss[i] + vels[i] * deltaT + (0.5 * accels[i] * (deltaT * deltaT));
@@ -252,7 +261,7 @@ namespace WpfHelloWorld
             {
                 vels[i] = vels[i] + (0.5 * accels[i] * deltaT);
             }
-            double pe = 10;
+            double pe = 0;
             Accel(poss, accels, ref pe);
             for (int i = 0; i < N; i++)
             {
@@ -260,9 +269,42 @@ namespace WpfHelloWorld
 
                 double ke = 0;
                 ke = ke + 0.5 * (Math.Pow(vels[i].X, 2) + Math.Pow(vels[i].Y, 2));
-                Ke = ke/10000;
+                Ke = ke / 10000;
             }
             txtKE.Text = Ke.ToString();
+        }
+        public void Potential(Position maspos)
+        {
+            double pe=1;
+            double r1 = 18;
+            double r2 =28;
+            double k=0;
+            double sigma = 2;
+            int epsilon = 1;
+            double ko;
+            double ko12;
+            double ko6;
+            var r = Math.Pow(maspos.X, 2)*0.001 + Math.Pow(maspos.Y, 2)*0.001;
+
+            if (Sqrt(r) <= r1) 
+
+                k = 1;
+
+            else if (r1 <= Sqrt(r) && Sqrt(r) <= r2)
+            
+
+                k = Pow((1 - Pow((Sqrt(r) - r1) / (r1 - r2), 2)), 2);
+            
+            else if (Sqrt(r) >= r2)
+
+                k = 0;
+
+            //ko = sigma / Sqrt(r);
+            ko12 = Pow((sigma / Sqrt(r)),12);
+            ko6 = Pow((sigma / Sqrt(r)), 6);
+            pe =pe+  4 * epsilon * (ko12-ko6) * k;
+            //pe = Pe;
+            txtPE.Text = pe.ToString();
         }
 
         public void Periodic(ref Position pos, int Lx, int Ly)
