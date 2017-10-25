@@ -159,7 +159,7 @@ namespace WpfHelloWorld
         public void InitmasVelocity(out Position[] m)
         {
             m = new Position[N];
-            int v0 = 160;
+            int v0 = 360;
             Random rand = new Random();
 
             for (int i = 0; i < N; i++)
@@ -171,7 +171,7 @@ namespace WpfHelloWorld
         public void InitmasAcceleratio(out Position[] m)
         {
             m = new Position[N];
-            int a0 = 450;
+            int a0 = 550;
             Random rand = new Random();
             for (int i = 0; i < N; i++)
             {
@@ -241,7 +241,7 @@ namespace WpfHelloWorld
 
         public void Verlet(Position[] poss, Position[] vels, Position[] accels)
         {
-            var deltaT = 0.0000000000003;
+            var deltaT = 0.000000000009;
             for (int i = 0; i < N; i++)
             {
                 poss[i] = poss[i] + vels[i] * deltaT + (0.5 * accels[i] * (deltaT * deltaT));
@@ -275,7 +275,7 @@ namespace WpfHelloWorld
         }
         public void Potential(Position maspos)
         {
-            double pe=1;
+            double pe=2;
             double r1 = 18;
             double r2 =28;
             double k=0;
