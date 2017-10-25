@@ -18,6 +18,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using static System.Math;
 using System.IO;
+using OxyPlot.Series;
 
 namespace WpfHelloWorld
 {
@@ -72,6 +73,9 @@ namespace WpfHelloWorld
         static double Pe;
         static double Ke;
         static bool Append;
+        //line from Kinetic Graphic
+        LineSeries lineKin;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -84,9 +88,26 @@ namespace WpfHelloWorld
             timer.Interval = new TimeSpan(0, 0, 1);
             Display();
             Append = false;
+
+            #region initKineticGraphic
+
+            var GraphModel= new PlotModel { Title = "Kinetic Graphic"};
+
+            lineKin = new LineSeries { Title = "Kinetic", MarkerType = MarkerType.Circle };
+            lineKin.Points.Add(new DataPoint(0,0));
+
+            GraphModel.Series.Add(lineKin);
+
+            graphKin.Model = GraphModel;
+
+            #endregion
+
         }
 
-        public IList<DataPoint> Points { get; private set; }
+
+
+
+
 
         //Вызывается через заданный интервал
         private void Timer_Tick(object sender, EventArgs e)
@@ -97,14 +118,16 @@ namespace WpfHelloWorld
             Display();
             time = time + 1;
             txtTime.Text = time.ToString();
+
+            lineKin.Points.Add(new DataPoint(double.Parse(txtTime.Text), double.Parse(txtKE.Text)));
+
             // stopWatch.Stop();
             // var diagTime = stopWatch.ElapsedMilliseconds;
             string path = @"C:\Users\Artyo\Desktop\test\TXT.csv";
-            using (StreamWriter SW = new StreamWriter(path,Append))
+            using (StreamWriter SW = new StreamWriter(path, Append))
             {
                 Append = true;
                 SW.WriteLine(string.Format("{0};{1};{2};", txtTime.Text, txtPE.Text, txtKE.Text));
-                
             }
 
         }

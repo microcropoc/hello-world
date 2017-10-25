@@ -7,9 +7,7 @@
         xmlns:local="clr-namespace:WpfHelloWorld"
         mc:Ignorable="d"
         Title="MainWindow" Height="650" Width="825">
-    <Window.DataContext>
-        <local:OxyViewModel/>
-    </Window.DataContext>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition ></RowDefinition>
@@ -37,7 +35,7 @@
                     </Border>
                 </StackPanel>
                 <Grid Grid.Row="1">
-                    <oxy:PlotView Model="{Binding Model}" />
+                    <oxy:PlotView Name="graphKin"/>
                 </Grid>
                 <!--forPotecial-->
                 <StackPanel Grid.Row="2">
