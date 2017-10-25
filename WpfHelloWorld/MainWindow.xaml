@@ -6,7 +6,7 @@
         xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
         xmlns:local="clr-namespace:WpfHelloWorld"
         mc:Ignorable="d"
-        Title="MainWindow" Height="650" Width="825">
+        Title="MainWindow" Height="768" Width="1024">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -23,9 +23,9 @@
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="7*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="2*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <!--forKinetic-->
                 <StackPanel Grid.Row="0">
@@ -45,7 +45,7 @@
                     </Border>
                 </StackPanel>
                 <Grid Grid.Row="3">
-                    
+                    <oxy:PlotView Name="graphPot"/>
                 </Grid>
             </Grid>
         </Grid>

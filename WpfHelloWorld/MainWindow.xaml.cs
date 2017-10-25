@@ -75,7 +75,7 @@ namespace WpfHelloWorld
         static bool Append;
         //line from Kinetic Graphic
         LineSeries lineKin;
-
+        LineSeries linePot;
         public MainWindow()
         {
             InitializeComponent();
@@ -102,6 +102,20 @@ namespace WpfHelloWorld
 
             #endregion
 
+            #region initKineticGraphic
+
+            var GraphModel1 = new PlotModel { Title = "Potention Graphic" };
+
+            linePot = new LineSeries { Title = "Potention", MarkerType = MarkerType.Circle };
+            linePot.Points.Add(new DataPoint(0, 0));
+
+            GraphModel1.Series.Add(linePot);
+
+            graphPot.Model = GraphModel1;
+
+            #endregion
+
+
         }
 
 
@@ -120,7 +134,7 @@ namespace WpfHelloWorld
             txtTime.Text = time.ToString();
 
             lineKin.Points.Add(new DataPoint(double.Parse(txtTime.Text), double.Parse(txtKE.Text)));
-
+            linePot.Points.Add(new DataPoint(double.Parse(txtTime.Text), double.Parse(txtPE.Text)));
             // stopWatch.Stop();
             // var diagTime = stopWatch.ElapsedMilliseconds;
             string path = @"C:\Users\Artyo\Desktop\test\TXT.csv";
