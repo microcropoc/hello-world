@@ -17,6 +17,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using static System.Math;
+using System.IO;
 
 namespace WpfHelloWorld
 {
@@ -70,6 +71,7 @@ namespace WpfHelloWorld
         static double[] massEnergy;
         static double Pe;
         static double Ke;
+        static bool Append;
         public MainWindow()
         {
             InitializeComponent();
@@ -81,6 +83,7 @@ namespace WpfHelloWorld
             timer.Tick += Timer_Tick;
             timer.Interval = new TimeSpan(0, 0, 1);
             Display();
+            Append = false;
         }
 
         public IList<DataPoint> Points { get; private set; }
@@ -96,6 +99,14 @@ namespace WpfHelloWorld
             txtTime.Text = time.ToString();
             // stopWatch.Stop();
             // var diagTime = stopWatch.ElapsedMilliseconds;
+            string path = @"C:\Users\Artyo\Desktop\test\TXT.csv";
+            using (StreamWriter SW = new StreamWriter(path,Append))
+            {
+                Append = true;
+                SW.WriteLine(string.Format("{0};{1};{2};", txtTime.Text, txtPE.Text, txtKE.Text));
+                
+            }
+
         }
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
@@ -112,6 +123,7 @@ namespace WpfHelloWorld
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
             timer.Stop();
+            Append = false;
         }
 
 
