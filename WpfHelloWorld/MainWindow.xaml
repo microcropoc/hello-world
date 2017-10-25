@@ -1,11 +1,15 @@
-﻿        <Window x:Class="WpfHelloWorld.MainWindow"
+﻿<Window x:Class="WpfHelloWorld.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
         xmlns:local="clr-namespace:WpfHelloWorld"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="650" Width="825">
+    <Window.DataContext>
+        <local:OxyViewModel/>
+    </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition ></RowDefinition>
@@ -14,25 +18,37 @@
         
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Canvas Background="Azure" Name="myCanvas" Grid.Column="0"/>
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="7*"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="2*"></RowDefinition>
                 </Grid.RowDefinitions>
+                <!--forKinetic-->
                 <StackPanel Grid.Row="0">
                     <TextBlock Text="Кинетическая энергия" FontSize="12" />
-                    
-                    <TextBlock  TextWrapping="Wrap"  Name="txtKE"/>
+                    <Border BorderBrush="Black" BorderThickness="1">
+                        <TextBlock  TextWrapping="Wrap"  Name="txtKE"/>
+                    </Border>
                 </StackPanel>
-                <StackPanel Grid.Row="1">
+                <Grid Grid.Row="1">
+                    <oxy:PlotView Model="{Binding Model}" />
+                </Grid>
+                <!--forPotecial-->
+                <StackPanel Grid.Row="2">
                     <TextBlock Text="Потенциальная энергия" FontSize="12" />
-                      <TextBlock  TextWrapping="Wrap" Name="txtPE"/>
+                    <Border BorderBrush="Black" BorderThickness="1">
+                        <TextBlock  TextWrapping="Wrap" Name="txtPE"/>
+                    </Border>
                 </StackPanel>
-                
+                <Grid Grid.Row="3">
+                    
+                </Grid>
             </Grid>
         </Grid>
 
