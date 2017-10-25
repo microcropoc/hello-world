@@ -94,7 +94,7 @@ namespace WpfHelloWorld
             var GraphModel= new PlotModel { Title = "Kinetic Graphic"};
 
             lineKin = new LineSeries { Title = "Kinetic", MarkerType = MarkerType.Circle };
-            lineKin.Points.Add(new DataPoint(0,0));
+           // lineKin.Points.Add(new DataPoint(0,0));
 
             GraphModel.Series.Add(lineKin);
 
@@ -107,7 +107,7 @@ namespace WpfHelloWorld
             var GraphModel1 = new PlotModel { Title = "Potention Graphic" };
 
             linePot = new LineSeries { Title = "Potention", MarkerType = MarkerType.Circle };
-            linePot.Points.Add(new DataPoint(0, 0));
+           // linePot.Points.Add(new DataPoint(0, 0));
 
             GraphModel1.Series.Add(linePot);
 
@@ -135,6 +135,8 @@ namespace WpfHelloWorld
 
             lineKin.Points.Add(new DataPoint(double.Parse(txtTime.Text), double.Parse(txtKE.Text)));
             linePot.Points.Add(new DataPoint(double.Parse(txtTime.Text), double.Parse(txtPE.Text)));
+            graphKin.Model.InvalidatePlot(true);
+            graphPot.Model.InvalidatePlot(true);
             // stopWatch.Stop();
             // var diagTime = stopWatch.ElapsedMilliseconds;
             string path = @"C:\Users\Artyo\Desktop\test\TXT.csv";
