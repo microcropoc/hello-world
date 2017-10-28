@@ -70,25 +70,31 @@ namespace ConsoleSn
         static Point food;
         static int speedSnake;
 
-        static void initSetting(int width,int height)
+        static void initSetting(string[] args)
         {
             speedSnake = 70;
-            if(height>0)
-                WindowHeight = height;
-            if(width>0)
-                WindowWidth = width;
-            CursorVisible = false;
-        }
-        static void Main(string[] args)
-        {
-            int width=0;
-            int height=0;
-            if(args.Length>=2)
+            int width = 0;
+            int height = 0;
+            if (args.Length >= 2)
             {
                 int.TryParse(args[0], out width);
                 int.TryParse(args[1], out height);
             }
-            initSetting(width,height);
+            if (height > 0)
+                if (LargestWindowHeight < height)
+                    WindowHeight = LargestWindowHeight;
+                else
+                    WindowHeight = height;
+            if (width > 0)
+                if (LargestWindowWidth < width)
+                    WindowWidth = LargestWindowWidth;
+                else
+                    WindowWidth = width;
+            CursorVisible = false;
+        }
+        static void Main(string[] args)
+        {
+            initSetting(args);
             maxY = WindowHeight;
             maxX = WindowWidth;
 
@@ -125,24 +131,28 @@ namespace ConsoleSn
                 switch (ReadKey(true).Key)
                 {
                     case ConsoleKey.W:
+                    case ConsoleKey.UpArrow:
                         if (curDirect != Direction.Down)
                         {
                             curDirect = Direction.Top;
                         }
                         break;
                     case ConsoleKey.S:
+                    case ConsoleKey.DownArrow:
                         if (curDirect != Direction.Top)
                         {
                             curDirect = Direction.Down;
                         }
                         break;
                     case ConsoleKey.A:
+                    case ConsoleKey.LeftArrow:
                         if (curDirect != Direction.Right)
                         {
                             curDirect = Direction.Left;
                         }
                         break;
                     case ConsoleKey.D:
+                    case ConsoleKey.RightArrow:
                         if (curDirect != Direction.Left)
                         {
                             curDirect = Direction.Right;
@@ -226,7 +236,7 @@ namespace ConsoleSn
             //write head
             var head = snake[0];
             SetCursorPosition(head.X, Math.Abs(head.Y - (maxY - 1)));
-            Write("#");
+            Write("▄");
 
             if (lastFood == food)
             {
