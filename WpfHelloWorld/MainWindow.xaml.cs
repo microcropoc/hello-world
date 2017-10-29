@@ -85,7 +85,7 @@ namespace WpfHelloWorld
             //init timer
             timer = new DispatcherTimer();
             timer.Tick += Timer_Tick;
-            timer.Interval = new TimeSpan(0, 0, 1);
+            timer.Interval = new TimeSpan(0, 0,0,0, 150);
             Display();
             Append = false;
 
@@ -175,8 +175,8 @@ namespace WpfHelloWorld
                 var ell = new Ellipse()
                 {
                     Fill = Brushes.Indigo,
-                    Height = D,
-                    Width = D
+                    Height = D/2.8,
+                    Width = D/2.8
                 };
                 Canvas.SetTop(ell, massPosition[i].Y);
                 Canvas.SetLeft(ell, massPosition[i].X);
@@ -212,7 +212,7 @@ namespace WpfHelloWorld
         public void InitmasVelocity(out Position[] m)
         {
             m = new Position[N];
-            int v0 = 360;
+            int v0 = 260;
             Random rand = new Random();
 
             for (int i = 0; i < N; i++)
@@ -224,7 +224,7 @@ namespace WpfHelloWorld
         public void InitmasAcceleratio(out Position[] m)
         {
             m = new Position[N];
-            int a0 = 550;
+            int a0 = 350;
             Random rand = new Random();
             for (int i = 0; i < N; i++)
             {
@@ -235,8 +235,8 @@ namespace WpfHelloWorld
 
         public void Accel(Position[] maspos, Position[] masaccel, ref double pe)
         {
-            double ap = 24;
-            double dp = 26;
+            double ap = 20;
+            double dp = 34;
 
 
             for (int i = 0; i < N - 1; i++)
@@ -294,7 +294,7 @@ namespace WpfHelloWorld
 
         public void Verlet(Position[] poss, Position[] vels, Position[] accels)
         {
-            var deltaT = 0.000000000009;
+            var deltaT = 0.00000000000006;
             for (int i = 0; i < N; i++)
             {
                 poss[i] = poss[i] + vels[i] * deltaT + (0.5 * accels[i] * (deltaT * deltaT));
@@ -329,8 +329,8 @@ namespace WpfHelloWorld
         public void Potential(Position maspos)
         {
             double pe=2;
-            double r1 = 18;
-            double r2 =28;
+            double r1 = 24;
+            double r2 =36;
             double k=0;
             double sigma = 2;
             int epsilon = 1;
