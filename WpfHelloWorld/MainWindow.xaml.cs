@@ -51,6 +51,10 @@ namespace WpfHelloWorld
         {
             return new Position(p1.X - p2.X, p1.Y - p2.Y);
         }
+        public override string ToString()
+        {
+            return X.ToString() + ";"+ Y.ToString();
+        }
     }
     public partial class MainWindow : Window
     {
@@ -143,14 +147,26 @@ namespace WpfHelloWorld
             using (StreamWriter SW = new StreamWriter(path, Append))
             {
                 Append = true;
-                SW.WriteLine(string.Format("{0};{1};{2};", txtTime.Text, txtPE.Text, txtKE.Text));
+                //SW.WriteLine(string.Format("{0};{1};{2};", txtTime.Text, txtPE.Text, txtKE.Text));
+                string str = string.Empty;
+                for (int i = 0; i < N; i++)
+                {
+                    str = str + massPosition[i] + "|";
+
+                }
+                str = str.Substring(0, str.Length - 1);
+                SW.WriteLine(str);
             }
 
         }
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
-
+            string path = @"C:\Users\Artyo\Desktop\test\TXT.csv";
+            using (StreamReader SW = new StreamReader(path))
+            {
+                string[] alltext = SW.ReadToEnd().Split('\n');
+            }
         }
 
 
