@@ -130,48 +130,88 @@ namespace WpfHelloWorld
         //Вызывается через заданный интервал
         private void Timer_Tick(object sender, EventArgs e)
         {
-            // Stopwatch stopWatch = new Stopwatch();
-            // stopWatch.Start();
-            Verlet(massPosition, massVelocity, massacceleratio);
+            if(isMoveFilm)
+            {
+                massPosition = possForFilm[int.Parse(txtTime.Text) % possForFilm.Count];
+            }
+            else
+            {
+                Verlet(massPosition, massVelocity, massacceleratio);
+            }
+
             Display();
             time = time + 1;
             txtTime.Text = time.ToString();
 
-            lineKin.Points.Add(new DataPoint(double.Parse(txtTime.Text), double.Parse(txtKE.Text)));
-            linePot.Points.Add(new DataPoint(double.Parse(txtTime.Text), double.Parse(txtPE.Text)));
-            graphKin.Model.InvalidatePlot(true);
-            graphPot.Model.InvalidatePlot(true);
-            // stopWatch.Stop();
-            // var diagTime = stopWatch.ElapsedMilliseconds;
-            string path = @"C:\Users\Artyo\Desktop\test\TXT.csv";
-            using (StreamWriter SW = new StreamWriter(path, Append))
+            if(!isMoveFilm)
             {
-                Append = true;
-                //SW.WriteLine(string.Format("{0};{1};{2};", txtTime.Text, txtPE.Text, txtKE.Text));
-                string str = string.Empty;
-                for (int i = 0; i < N; i++)
-                {
-                    str = str + massPosition[i] + "|";
-
-                }
-                str = str.Substring(0, str.Length - 1);
-                SW.WriteLine(str);
+                lineKin.Points.Add(new DataPoint(double.Parse(txtTime.Text), double.Parse(txtKE.Text)));
+                linePot.Points.Add(new DataPoint(double.Parse(txtTime.Text), double.Parse(txtPE.Text)));
+                graphKin.Model.InvalidatePlot(true);
+                graphPot.Model.InvalidatePlot(true);
             }
 
+
+            #region writeToFile
+
+            if (!isMoveFilm)
+            {
+                using (StreamWriter SW = new StreamWriter(path, Append))
+                {
+                    Append = true;
+                    //SW.WriteLine(string.Format("{0};{1};{2};", txtTime.Text, txtPE.Text, txtKE.Text));
+                    string str = string.Empty;
+                    for (int i = 0; i < N; i++)
+                    {
+                        str = str + massPosition[i] + "|";
+
+                    }
+                    str = str.Substring(0, str.Length - 1);
+                    SW.WriteLine(str);
+                }
+            }
+
+            #endregion
+
         }
+
+        bool isMoveFilm = false;
+        List<Position[]> possForFilm;
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
             string path = @"C:\Users\Artyo\Desktop\test\TXT.csv";
+            isMoveFilm = true;
             using (StreamReader SW = new StreamReader(path))
             {
-                string[] alltext = SW.ReadToEnd().Split('\n');
+                possForFilm = new List<Position[]>();
+                string[] allLines = SW.ReadToEnd().Split(new char[] { '\n' },StringSplitOptions.RemoveEmptyEntries);
+                foreach(string line in allLines)
+                {
+                    string[] items = line.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                    Position[] p = new Position[items.Length];
+                    for (int i = 0; i < items.Length; i++)
+                    {
+                        double x = double.Parse(items[i].Split(';')[0]);
+                        double y = double.Parse(items[i].Split(';')[1]);
+                        p[i] = new Position(x,y);
+                    }
+                    possForFilm.Add(p);
+                }
             }
+            timer.Start();
         }
 
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
+            #region EndFilm
+
+            isMoveFilm = false;
+            possForFilm = null;
+
+            #endregion
+
             timer.Start();
         }
 
