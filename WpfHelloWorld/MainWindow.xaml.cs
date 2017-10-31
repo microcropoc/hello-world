@@ -294,7 +294,7 @@ namespace WpfHelloWorld
 
         public void Verlet(Position[] poss, Position[] vels, Position[] accels)
         {
-            var deltaT = 0.00000000000006;
+            var deltaT = 0.0000000000006;
             for (int i = 0; i < N; i++)
             {
                 poss[i] = poss[i] + vels[i] * deltaT + (0.5 * accels[i] * (deltaT * deltaT));
