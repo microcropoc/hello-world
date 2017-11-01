@@ -62,7 +62,7 @@ namespace WpfHelloWorld
         const int D = 20;
         long time = 0;
         DispatcherTimer timer;
-        const int N = 144;
+        const int N = 225;
         const int Lx = 280;
         const int Ly = 280;
         static Position[] massPosition;
@@ -81,18 +81,28 @@ namespace WpfHelloWorld
         //line from Kinetic Graphic
         LineSeries lineKin;
         LineSeries linePot;
+
         string pathFile;
+        int milliSec = 150;
+        int countAddFrame = 20;
+        bool isMoveFilm = false;
+        List<Position[]> possForFilm;
+
         public MainWindow()
         {
             InitializeComponent();
-            pathFile = AppSettings["pathFile"];
+            //if(File.Exists(AppSettings["pathFile"]))
+            string needDirectory= System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Files");
+            if (!Directory.Exists(needDirectory))
+                Directory.CreateDirectory(needDirectory);
+            pathFile = System.IO.Path.Combine(needDirectory,"movie.txt");
+
             InitmasPosition(out massPosition);
             InitmasVelocity(out massVelocity);
             InitmasAcceleratio(out massacceleratio);
             //init timer
             timer = new DispatcherTimer();
             timer.Tick += Timer_Tick;
-            timer.Interval = new TimeSpan(0, 0,0,0, 1);
             Display();
             Append = false;
 
@@ -125,12 +135,24 @@ namespace WpfHelloWorld
 
         }
 
+        void Stop()
+        {
+            timer.Stop();
+            time = 0;
+            txtTime.Text = time.ToString();
+        }
+
         //Вызывается через заданный интервал
         private void Timer_Tick(object sender, EventArgs e)
         {
             if(isMoveFilm)
             {
-                time = int.Parse(txtTime.Text) % possForFilm.Count;
+                if(int.Parse(txtTime.Text) == possForFilm.Count)
+                {
+
+                    Stop();
+                    return;
+                }
                 massPosition = possForFilm[(int)time];
             }
             else
@@ -174,8 +196,7 @@ namespace WpfHelloWorld
 
         }
 
-        bool isMoveFilm = false;
-        List<Position[]> possForFilm;
+
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
@@ -185,6 +206,7 @@ namespace WpfHelloWorld
                 possForFilm = new List<Position[]>();
                 string[] allLines = SW.ReadToEnd().Split(new char[] { '\n' },StringSplitOptions.RemoveEmptyEntries);
                 //foreach(string line in allLines)
+                possForFilm.Add(StrToPoss(allLines[0]));
                 for (int i = 0; i < allLines.Length-1; i++)
                 {
                     List<Position[]> subFrames = new List<Position[]>();
@@ -197,26 +219,34 @@ namespace WpfHelloWorld
                     {
                         massLenght[j] = Math.Sqrt(Math.Pow(firstPoss[j].X - secondPoss[j].X, 2) + Math.Pow(firstPoss[j].Y - secondPoss[j].Y, 2));
                         Vector vec = new Vector(firstPoss[j].X, firstPoss[j].Y) - new Vector(secondPoss[j].X, secondPoss[j].Y);
-                        massVector[j] = vec;
                         vec.Normalize();
-
-                        for (int k = 0; k < countAddFrame; k++)
-                        {
-                            Position[] addFrame = new Position[firstPoss.Length];
-                        }
-                        //p1.X += diff / 2 * vec.X;
-                        //p1.Y += diff / 2 * vec.Y;
+                        massVector[j] = vec;
                     }
 
-                    subFrames.Add(firstPoss);
-                    //possForFilm.Add(StrToPoss(line));
+                    //addFrame
+                    for (int j = 0; j < countAddFrame; j++)
+                    {
+                        Position[] ps = new Position[firstPoss.Length];
+                        for (int k = 0; k < ps.Length; k++)
+                        {
+                            Position p = new Position();
+                            p.X =firstPoss[k].X +((massLenght[k] * ((float)(j + 1) / countAddFrame)) * massVector[k].X);
+                            p.Y = firstPoss[k].Y + ((massLenght[k] * ((float)(j + 1) / countAddFrame)) * massVector[k].Y);
+                            Periodic(ref p, Lx, Ly);
+                            ps[k] = p;
+                        }
+
+                        subFrames.Add(ps);
+                    }
+
+                    subFrames.Add(secondPoss);
+                    possForFilm.AddRange(subFrames);
                 }
             }
+            timer.Interval = new TimeSpan(0, 0, 0, 0, milliSec / countAddFrame);
             timer.Start();
         }
-
-        int countAddFrame = 10;
-
+       
         Position[] StrToPoss(string line)
         {
             string[] items = line.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -239,12 +269,13 @@ namespace WpfHelloWorld
 
             #endregion
 
+            timer.Interval = new TimeSpan(0, 0, 0, 0, milliSec);
             timer.Start();
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
-            timer.Stop();
+            Stop();
             Append = false;
         }
 
@@ -253,11 +284,11 @@ namespace WpfHelloWorld
         void Display()
         {
             myCanvas.Children.Clear();
-            for (int i = 0; i < N; i++)
+            for (int i = 0; i < massPosition.Length; i++)
             {
                 var ell = new Ellipse()
                 {
-                    Fill = Brushes.Indigo,
+                    Fill = (i==0 || i == 1)?Brushes.Red:Brushes.Indigo,
                     Height = D/2.8,
                     Width = D/2.8
                 };
