@@ -92,7 +92,7 @@ namespace WpfHelloWorld
             //init timer
             timer = new DispatcherTimer();
             timer.Tick += Timer_Tick;
-            timer.Interval = new TimeSpan(0, 0,0,0, 150);
+            timer.Interval = new TimeSpan(0, 0,0,0, 1);
             Display();
             Append = false;
 
@@ -125,17 +125,13 @@ namespace WpfHelloWorld
 
         }
 
-
-
-
-
-
         //Вызывается через заданный интервал
         private void Timer_Tick(object sender, EventArgs e)
         {
             if(isMoveFilm)
             {
-                massPosition = possForFilm[int.Parse(txtTime.Text) % possForFilm.Count];
+                time = int.Parse(txtTime.Text) % possForFilm.Count;
+                massPosition = possForFilm[(int)time];
             }
             else
             {
