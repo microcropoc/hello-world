@@ -186,22 +186,51 @@ namespace WpfHelloWorld
             {
                 possForFilm = new List<Position[]>();
                 string[] allLines = SW.ReadToEnd().Split(new char[] { '\n' },StringSplitOptions.RemoveEmptyEntries);
-                foreach(string line in allLines)
+                //foreach(string line in allLines)
+                for (int i = 0; i < allLines.Length-1; i++)
                 {
-                    string[] items = line.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-                    Position[] p = new Position[items.Length];
-                    for (int i = 0; i < items.Length; i++)
+                    List<Position[]> subFrames = new List<Position[]>();
+                    Position[] firstPoss = StrToPoss(allLines[i]);
+                    Position[] secondPoss = StrToPoss(allLines[i+1]);
+                    double[] massLenght = new double[firstPoss.Length];
+                    Vector[] massVector = new Vector[firstPoss.Length];
+
+                    for (int j = 0; j < massLenght.Length; j++)
                     {
-                        double x = double.Parse(items[i].Split(';')[0]);
-                        double y = double.Parse(items[i].Split(';')[1]);
-                        p[i] = new Position(x,y);
+                        massLenght[j] = Math.Sqrt(Math.Pow(firstPoss[j].X - secondPoss[j].X, 2) + Math.Pow(firstPoss[j].Y - secondPoss[j].Y, 2));
+                        Vector vec = new Vector(firstPoss[j].X, firstPoss[j].Y) - new Vector(secondPoss[j].X, secondPoss[j].Y);
+                        massVector[j] = vec;
+                        vec.Normalize();
+
+                        for (int k = 0; k < countAddFrame; k++)
+                        {
+                            Position[] addFrame = new Position[firstPoss.Length];
+                        }
+                        //p1.X += diff / 2 * vec.X;
+                        //p1.Y += diff / 2 * vec.Y;
                     }
-                    possForFilm.Add(p);
+
+                    subFrames.Add(firstPoss);
+                    //possForFilm.Add(StrToPoss(line));
                 }
             }
             timer.Start();
         }
 
+        int countAddFrame = 10;
+
+        Position[] StrToPoss(string line)
+        {
+            string[] items = line.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            Position[] p = new Position[items.Length];
+            for (int i = 0; i < items.Length; i++)
+            {
+                double x = double.Parse(items[i].Split(';')[0]);
+                double y = double.Parse(items[i].Split(';')[1]);
+                p[i] = new Position(x, y);
+            }
+            return p;
+        }
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
