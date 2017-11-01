@@ -19,6 +19,7 @@ using System.Windows.Threading;
 using static System.Math;
 using System.IO;
 using OxyPlot.Series;
+using static System.Configuration.ConfigurationManager;
 
 namespace WpfHelloWorld
 {
@@ -80,9 +81,11 @@ namespace WpfHelloWorld
         //line from Kinetic Graphic
         LineSeries lineKin;
         LineSeries linePot;
+        string pathFile;
         public MainWindow()
         {
             InitializeComponent();
+            pathFile = AppSettings["pathFile"];
             InitmasPosition(out massPosition);
             InitmasVelocity(out massVelocity);
             InitmasAcceleratio(out massacceleratio);
@@ -156,7 +159,7 @@ namespace WpfHelloWorld
 
             if (!isMoveFilm)
             {
-                using (StreamWriter SW = new StreamWriter(path, Append))
+                using (StreamWriter SW = new StreamWriter(pathFile, Append))
                 {
                     Append = true;
                     //SW.WriteLine(string.Format("{0};{1};{2};", txtTime.Text, txtPE.Text, txtKE.Text));
@@ -180,9 +183,8 @@ namespace WpfHelloWorld
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
-            string path = @"C:\Users\Artyo\Desktop\test\TXT.csv";
             isMoveFilm = true;
-            using (StreamReader SW = new StreamReader(path))
+            using (StreamReader SW = new StreamReader(pathFile))
             {
                 possForFilm = new List<Position[]>();
                 string[] allLines = SW.ReadToEnd().Split(new char[] { '\n' },StringSplitOptions.RemoveEmptyEntries);
