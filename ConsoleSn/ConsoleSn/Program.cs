@@ -236,17 +236,20 @@ namespace ConsoleSn
             //write head
             var head = snake[0];
             SetCursorPosition(head.X, Math.Abs(head.Y - (maxY - 1)));
-            Write("▄");
+            ForegroundColor = ConsoleColor.DarkGreen;
+            Write("#");
 
             if (lastFood == food)
             {
                 SetCursorPosition(shadowTail.X, Math.Abs(shadowTail.Y - (maxY - 1)));
-                Write('.');
+                ForegroundColor = ConsoleColor.DarkGray;
+                Write('*');
             }
             else
             {
                 lastFood = food;
                 SetCursorPosition(food.X, Math.Abs(food.Y - (maxY - 1)));
+                ForegroundColor = ConsoleColor.Green;
                 Write("$");
             }
             shadowTail = snake[snake.Count - 1];
