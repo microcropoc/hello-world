@@ -62,7 +62,21 @@ namespace ConsoleSn
     class Program
     {
         static List<Point> snake;
-        static Direction curDirect;
+        static Direction CurDirect
+        {
+            get
+            {
+                fixKeyRead = false;
+                return _curDirect;
+            }
+            set
+            {
+                fixKeyRead = true;
+                _curDirect = value;
+            }
+        }
+        static bool fixKeyRead;
+        static Direction _curDirect;
         static int maxX;
         static int maxY;
         static Timer gameTimer;
@@ -121,41 +135,58 @@ namespace ConsoleSn
 
             initDisplay();
             //initDirect
-            curDirect = Direction.Left;
+            CurDirect = Direction.Left;
 
             gameTimer = new Timer(gameLoop,null,0, speedSnake);
 
             #region loopReadKey
             do
             {
+                if (!fixKeyRead)
                 switch (ReadKey(true).Key)
                 {
                     case ConsoleKey.W:
                     case ConsoleKey.UpArrow:
-                        if (curDirect != Direction.Down)
+                        if (CurDirect != Direction.Down)
                         {
-                            curDirect = Direction.Top;
+                            CurDirect = Direction.Top;
+                        }
+                        else
+                        {
+                            CurDirect = Direction.Down;
                         }
                         break;
                     case ConsoleKey.S:
                     case ConsoleKey.DownArrow:
-                        if (curDirect != Direction.Top)
+                        if (CurDirect != Direction.Top)
                         {
-                            curDirect = Direction.Down;
+                            CurDirect = Direction.Down;
+                        }
+                        else
+                        {
+                            CurDirect = Direction.Top;
                         }
                         break;
                     case ConsoleKey.A:
                     case ConsoleKey.LeftArrow:
-                        if (curDirect != Direction.Right)
+                        if (CurDirect != Direction.Right)
                         {
-                            curDirect = Direction.Left;
+                            CurDirect = Direction.Left;
+                        }
+                        else
+                        {
+                            CurDirect = Direction.Right;
                         }
                         break;
                     case ConsoleKey.D:
                     case ConsoleKey.RightArrow:
-                        if (curDirect != Direction.Left)
+                        if (CurDirect != Direction.Left)
                         {
-                            curDirect = Direction.Right;
+                            CurDirect = Direction.Right;
+                        }
+                        else
+                        {
+                            CurDirect = Direction.Left;
                         }
                         break;
                 }
@@ -167,7 +198,7 @@ namespace ConsoleSn
         static void gameLoop(object o)
         {
             //step head
-            switch(curDirect)
+            switch(CurDirect)
             {
                 case Direction.Top:
                     snake[0]=new Point(snake[0].X, (snake[0].Y+1)%maxY);
