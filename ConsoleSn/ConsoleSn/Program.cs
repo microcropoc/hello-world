@@ -79,10 +79,10 @@ namespace ConsoleSn
         static Direction _curDirect;
         static int maxX;
         static int maxY;
-        static Timer gameTimer;
         static Random randForFood = new Random();
         static Point food;
         static int speedSnake;
+        static bool isExit;
 
         static void initSetting(string[] args)
         {
@@ -137,62 +137,65 @@ namespace ConsoleSn
             //initDirect
             CurDirect = Direction.Left;
 
-            gameTimer = new Timer(gameLoop,null,0, speedSnake);
-
-            #region loopReadKey
-            do
+            using (var gameTimer = new Timer(gameLoop, null, 0, speedSnake))
             {
-                if (!fixKeyRead)
-                switch (ReadKey(true).Key)
+                #region loopReadKey
+                do
                 {
-                    case ConsoleKey.W:
-                    case ConsoleKey.UpArrow:
-                        if (CurDirect != Direction.Down)
+                    if (!fixKeyRead)
+                        switch (ReadKey(true).Key)
                         {
-                            CurDirect = Direction.Top;
+                            case ConsoleKey.W:
+                            case ConsoleKey.UpArrow:
+                                if (CurDirect != Direction.Down)
+                                {
+                                    CurDirect = Direction.Top;
+                                }
+                                else
+                                {
+                                    CurDirect = Direction.Down;
+                                }
+                                break;
+                            case ConsoleKey.S:
+                            case ConsoleKey.DownArrow:
+                                if (CurDirect != Direction.Top)
+                                {
+                                    CurDirect = Direction.Down;
+                                }
+                                else
+                                {
+                                    CurDirect = Direction.Top;
+                                }
+                                break;
+                            case ConsoleKey.A:
+                            case ConsoleKey.LeftArrow:
+                                if (CurDirect != Direction.Right)
+                                {
+                                    CurDirect = Direction.Left;
+                                }
+                                else
+                                {
+                                    CurDirect = Direction.Right;
+                                }
+                                break;
+                            case ConsoleKey.D:
+                            case ConsoleKey.RightArrow:
+                                if (CurDirect != Direction.Left)
+                                {
+                                    CurDirect = Direction.Right;
+                                }
+                                else
+                                {
+                                    CurDirect = Direction.Left;
+                                }
+                                break;
                         }
-                        else
-                        {
-                            CurDirect = Direction.Down;
-                        }
-                        break;
-                    case ConsoleKey.S:
-                    case ConsoleKey.DownArrow:
-                        if (CurDirect != Direction.Top)
-                        {
-                            CurDirect = Direction.Down;
-                        }
-                        else
-                        {
-                            CurDirect = Direction.Top;
-                        }
-                        break;
-                    case ConsoleKey.A:
-                    case ConsoleKey.LeftArrow:
-                        if (CurDirect != Direction.Right)
-                        {
-                            CurDirect = Direction.Left;
-                        }
-                        else
-                        {
-                            CurDirect = Direction.Right;
-                        }
-                        break;
-                    case ConsoleKey.D:
-                    case ConsoleKey.RightArrow:
-                        if (CurDirect != Direction.Left)
-                        {
-                            CurDirect = Direction.Right;
-                        }
-                        else
-                        {
-                            CurDirect = Direction.Left;
-                        }
-                        break;
-                }
 
-            } while (true);
-            #endregion
+                } while (!isExit);
+                #endregion
+            }
+            displayExit();
+            ReadKey(true);
         }
 
         static void gameLoop(object o)
@@ -220,7 +223,7 @@ namespace ConsoleSn
             if(snake.Skip(1).Any(p=>p==snake[0]))
             {
                 //GameOver
-                throw new Exception();
+                isExit = true;
             }
 
             //))
@@ -254,6 +257,12 @@ namespace ConsoleSn
 
         static Point lastFood;
         static Point shadowTail;
+
+        static void displayExit()
+        {
+            Clear();
+            WriteLine("Score: "+snake.Count);
+        }
 
         static void initDisplay()
         {
